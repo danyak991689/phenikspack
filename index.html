@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101014">
+  <meta name="description" content="PheniksPack — каталог ресурспаков для Minecraft. Находи свой стиль игры.">
+  <title>PheniksPack — Твой Minecraft. Твои правила.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="PheniksPack — главная">
+      <span class="brand-mark"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M21.5 3.5c1.2 6.1-2.7 8.2-6.8 11.3-4.2 3.2-6.3 7.2-4.5 12.2 1.2-3.1 3.2-4.8 6.1-5.8-1.1 5.3 1.2 10.1 6.7 14.3 7.7-4.8 11.2-11.2 9.2-18.1-1.1 2.1-2.5 3.4-4.5 4.1 1.5-7.1-1.3-13.1-6.2-18Z" fill="currentColor"/><path d="M19.9 26.3c-2.4 3.3-1.2 6.5 2.8 9.2 3.5-2.3 5.1-5.1 4.8-8.4-1.4 1.4-2.8 2.1-4.5 2.2.1-1.3-.9-2.4-3.1-3Z" fill="#17171b"/></svg></span>
+      <span>PHENIKS<span class="brand-light">PACK</span></span>
+    </a>
+    <nav class="nav-links" aria-label="Основная навигация">
+      <a href="#catalog">Каталог</a>
+      <a href="#about">О проекте</a>
+      <a href="#install">Установка</a>
+    </nav>
+    <a class="top-button" href="#catalog">Выбрать пак <span>↗</span></a>
+    <button class="menu-toggle" id="menuToggle" aria-label="Открыть меню" aria-expanded="false"><span></span><span></span></button>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-glow"></div>
+      <div class="hero-content">
+        <div class="eyebrow"><span class="pulse"></span> ТВОЯ ИГРА — ТВОЙ СТИЛЬ</div>
+        <h1>Твой Minecraft.<br><span>Твои правила.</span></h1>
+        <p class="hero-copy">Ресурспаки, которые меняют ощущения от игры. Собери свой Minecraft — от минимализма до полного погружения.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#catalog">Исследовать каталог <span>→</span></a>
+          <a class="button button-ghost" href="#about">Что такое PheniksPack?</a>
+        </div>
+        <div class="hero-meta"><span class="meta-line"></span><span>ПОДБОРКА РЕСУРСПАКОВ ДЛЯ MINECRAFT</span></div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+        <div class="art-core"><div class="core-inner"><span>PH</span></div></div>
+        <div class="art-spark spark-one"></div><div class="art-spark spark-two"></div><div class="art-spark spark-three"></div>
+        <div class="art-caption"><span class="caption-dot"></span> BUILT FOR YOUR WORLD</div>
+      </div>
+      <div class="hero-bottom"><span>01 / 03</span><span class="hero-bottom-line"></span><span>SCROLL TO EXPLORE ↓</span></div>
+    </section>
+
+    <section class="catalog-section section-wrap" id="catalog">
+      <div class="section-heading">
+        <div><div class="eyebrow">КОЛЛЕКЦИЯ</div><h2>Найди свой <span>стиль.</span></h2></div>
+        <p>Выбирай настроение, изучай подборки и сохраняй то, что понравилось.</p>
+      </div>
+      <div class="catalog-toolbar">
+        <label class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="Поиск ресурспаков..." autocomplete="off"><kbd>/</kbd></label>
+        <div class="filter-row" id="filterRow" aria-label="Фильтр по категориям">
+          <button class="filter-chip active" data-filter="all">Все</button>
+          <button class="filter-chip" data-filter="realism">Реализм</button>
+          <button class="filter-chip" data-filter="pvp">PvP</button>
+          <button class="filter-chip" data-filter="vanilla">Vanilla</button>
+          <button class="filter-chip" data-filter="atmosphere">Атмосфера</button>
+        </div>
+        <button class="favorites-toggle" id="favoritesToggle" aria-pressed="false"><span>♡</span> Избранное <b id="favoriteCount">0</b></button>
+      </div>
+      <div class="catalog-note"><span class="note-icon">i</span> Сейчас это демонстрационный каталог. Скоро здесь появятся настоящие паки и прямые ссылки на скачивание.</div>
+      <div class="pack-grid" id="packGrid" aria-live="polite"></div>
+      <div class="empty-state" id="emptyState" hidden><div class="empty-symbol">⌕</div><h3>Ничего не найдено</h3><p>Попробуй изменить запрос или выбрать другую категорию.</p><button class="text-button" id="resetFilters">Сбросить фильтры ↗</button></div>
+    </section>
+
+    <section class="about-section" id="about">
+      <div class="section-wrap about-grid">
+        <div class="about-mark"><div class="about-mark-ring"></div><div class="about-mark-center">PH<span>+</span></div><span class="about-mark-label">EST. 2026</span></div>
+        <div class="about-copy"><div class="eyebrow">НЕ ПРОСТО СПИСОК ФАЙЛОВ</div><h2>Твой мир.<br><span>Твоя атмосфера.</span></h2><p>PheniksPack — место, где можно находить новые визуальные стили для Minecraft. Никакой лишней суеты: понятные карточки, удобный поиск и всё важное об одном паке в одном месте.</p><div class="about-points"><div><b>01</b><span>Подборки по стилю</span></div><div><b>02</b><span>Понятная информация</span></div><div><b>03</b><span>Удобная установка</span></div></div></div>
+      </div>
+    </section>
+
+    <section class="install-section section-wrap" id="install">
+      <div class="section-heading"><div><div class="eyebrow">БЫСТРЫЙ СТАРТ</div><h2>Установка без <span>головной боли.</span></h2></div><p>Когда выберешь пак, установить его будет просто.</p></div>
+      <div class="steps">
+        <article class="step-card"><span class="step-number">01</span><div class="step-icon">↓</div><h3>Скачай архив</h3><p>Скачай ZIP-файл выбранного ресурспака с сайта.</p></article>
+        <article class="step-card"><span class="step-number">02</span><div class="step-icon">▤</div><h3>Открой папку</h3><p>В Minecraft открой «Настройки» → «Наборы ресурсов» → «Папка». </p></article>
+        <article class="step-card"><span class="step-number">03</span><div class="step-icon">✦</div><h3>Активируй пак</h3><p>Перемести ZIP в папку, вернись в игру и включи его.</p></article>
+      </div>
+      <div class="install-tip"><span>!</span><p>Не распаковывай ZIP, если автор ресурспака рекомендует устанавливать его архивом. Всегда проверяй совместимость с версией Minecraft.</p></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <a class="brand footer-brand" href="#"><span class="brand-mark"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M21.5 3.5c1.2 6.1-2.7 8.2-6.8 11.3-4.2 3.2-6.3 7.2-4.5 12.2 1.2-3.1 3.2-4.8 6.1-5.8-1.1 5.3 1.2 10.1 6.7 14.3 7.7-4.8 11.2-11.2 9.2-18.1-1.1 2.1-2.5 3.4-4.5 4.1 1.5-7.1-1.3-13.1-6.2-18Z" fill="currentColor"/></svg></span><span>PHENIKS<span class="brand-light">PACK</span></span></a>
+    <span class="footer-tagline">ТВОЙ MINECRAFT. ТВОИ ПРАВИЛА.</span>
+    <span class="footer-copy">© 2026 PheniksPack. Неофициальный фанатский проект.</span>
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html>
