@@ -327,3 +327,45 @@ body.profile-open{overflow:hidden}
   .profile-stats b{font-size:21px}
   .profile-stats span{font-size:8px}
 }
+
+
+/* Individual animated atmosphere for every resource pack */
+.pack-cover.source-cover{isolation:isolate;--pack-hue:0deg;--pack-drift:8px;--pack-delay:0s;transition:filter .35s ease}
+.pack-cover.source-cover:before,.pack-cover.source-cover:after{z-index:0;pointer-events:none;opacity:.34}
+.pack-atmosphere{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;color:var(--pack-accent,#b7a3ff)}
+.pack-atmosphere-glow{position:absolute;width:72%;aspect-ratio:1;left:14%;top:10%;border-radius:50%;background:radial-gradient(circle, color-mix(in srgb,var(--pack-accent) 42%,transparent),transparent 68%);filter:blur(10px);animation:packGlow 5s ease-in-out infinite alternate;animation-delay:var(--pack-delay)}
+.pack-atmosphere-orbit{position:absolute;width:76%;height:62%;left:12%;top:17%;border:1px solid color-mix(in srgb,var(--pack-accent) 48%,transparent);border-radius:50%;transform:rotate(-28deg);box-shadow:0 0 24px color-mix(in srgb,var(--pack-accent) 12%,transparent);animation:packOrbit 16s linear infinite}
+.pack-atmosphere-symbol{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:clamp(42px,6vw,68px);line-height:1;color:var(--pack-accent);opacity:.22;text-shadow:0 0 24px var(--pack-accent);filter:hue-rotate(var(--pack-hue));animation:packSymbol 4.8s ease-in-out infinite}
+.pack-atmosphere-particle{position:absolute;width:5px;height:5px;border-radius:50%;background:var(--pack-accent);box-shadow:0 0 13px 3px color-mix(in srgb,var(--pack-accent) 60%,transparent);opacity:.8;animation:packFloat 4s ease-in-out infinite alternate}
+.particle-a{left:22%;top:29%;animation-delay:var(--pack-delay)}
+.particle-b{left:76%;top:61%;width:3px;height:3px;animation-duration:5.2s;animation-delay:-1.7s}
+.particle-c{left:62%;top:19%;width:4px;height:4px;animation-duration:3.6s;animation-delay:-2.4s}
+.pack-vibe-label{position:absolute;left:50%;bottom:13px;z-index:2;transform:translateX(-50%);padding:5px 8px;border:1px solid color-mix(in srgb,var(--pack-accent) 40%,transparent);border-radius:2px;background:rgba(9,10,15,.58);color:var(--pack-accent);font-size:7px;font-weight:900;letter-spacing:1.8px;white-space:nowrap;backdrop-filter:blur(7px)}
+.pack-source-icon{z-index:1;transition:transform .35s ease,filter .35s ease}
+.pack-card:hover .pack-source-icon{transform:translateY(-3px) scale(1.06);filter:drop-shadow(0 0 18px color-mix(in srgb,var(--pack-accent) 40%,transparent))}
+.pack-card:hover .pack-atmosphere-symbol{opacity:.38;transform:translate(-50%,-50%) scale(1.13)}
+@keyframes packGlow{from{transform:scale(.82);opacity:.55}to{transform:scale(1.14);opacity:1}}
+@keyframes packOrbit{from{transform:rotate(-28deg)}to{transform:rotate(332deg)}}
+@keyframes packSymbol{0%,100%{opacity:.13}50%{opacity:.3}}
+@keyframes packFloat{from{transform:translate3d(0,0,0) scale(.75);opacity:.35}to{transform:translate3d(var(--pack-drift),-13px,0) scale(1.25);opacity:.95}}
+.pack-visual-fire{--pack-accent:#ff8b42;background:radial-gradient(circle at 50% 65%,#71351f 0,#342027 48%,#17151b 100%)}
+.pack-visual-fire .pack-atmosphere-glow{background:radial-gradient(circle,#ff7a32 0,rgba(255,93,31,.16) 42%,transparent 72%)}
+.pack-visual-ice{--pack-accent:#9beaff;background:radial-gradient(circle at 50% 45%,#376f8d 0,#1d3548 48%,#151b27 100%)}
+.pack-visual-ice .pack-atmosphere-glow{background:radial-gradient(circle,#9beaff 0,rgba(86,197,255,.18) 44%,transparent 72%)}
+.pack-visual-ocean{--pack-accent:#54dce9;background:radial-gradient(circle at 50% 55%,#176879 0,#173a50 48%,#131a27 100%)}
+.pack-visual-ocean .pack-atmosphere-orbit{border-radius:44%;transform:rotate(20deg) scaleY(.5)}
+.pack-visual-nature{--pack-accent:#9de28b;background:radial-gradient(circle at 50% 48%,#426c3e 0,#253d31 50%,#151d1b 100%)}
+.pack-visual-nature .pack-atmosphere-orbit{border-radius:8% 70% 8% 70%;transform:rotate(35deg)}
+.pack-visual-magic{--pack-accent:#c7a1ff;background:radial-gradient(circle at 50% 48%,#58437c 0,#2c2645 48%,#171722 100%)}
+.pack-visual-space{--pack-accent:#80a9ff;background:radial-gradient(circle at 50% 48%,#3c4d87 0,#20243f 50%,#12131e 100%)}
+.pack-visual-space .pack-atmosphere-particle{width:3px;height:3px;box-shadow:0 0 8px 2px var(--pack-accent)}
+.pack-visual-medieval{--pack-accent:#e4b66d;background:radial-gradient(circle at 50% 48%,#74533c 0,#3a2b2a 48%,#1b171b 100%)}
+.pack-visual-horror{--pack-accent:#bd8cff;background:radial-gradient(circle at 50% 48%,#51405f 0,#292333 50%,#121217 100%)}
+.pack-visual-pvp{--pack-accent:#ff655f;background:radial-gradient(circle at 50% 48%,#78323a 0,#3d202b 50%,#19151c 100%)}
+.pack-visual-pvp .pack-atmosphere-orbit{border-radius:0;transform:rotate(45deg) scale(.72)}
+.pack-visual-realism{--pack-accent:#d4c5a4;background:radial-gradient(circle at 50% 48%,#777467 0,#373a3b 48%,#181a1d 100%)}
+.pack-visual-vanilla{--pack-accent:#c7d49a;background:radial-gradient(circle at 50% 48%,#63734e 0,#354335 48%,#171e1b 100%)}
+.pack-visual-cute{--pack-accent:#ff9ecb;background:radial-gradient(circle at 50% 48%,#89516f 0,#4a2d4a 48%,#1d1822 100%)}
+.pack-visual-mystery{--pack-accent:#ff9a55;background:radial-gradient(circle at 50% 48%,#60456b 0,#2d2639 48%,#15151c 100%)}
+@media(prefers-reduced-motion:reduce){.pack-atmosphere-orbit,.pack-atmosphere-glow,.pack-atmosphere-symbol,.pack-atmosphere-particle{animation:none!important}}
+@media(max-width:560px){.pack-vibe-label{bottom:10px;font-size:6px;letter-spacing:1.2px}.pack-atmosphere-symbol{font-size:48px}}
