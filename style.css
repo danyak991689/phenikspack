@@ -37,3 +37,33 @@
   display: block;
   margin: 12px auto 0;
 }
+
+/* In-site pack details modal */
+.details-button{font:inherit;cursor:pointer;border:0}
+body.modal-open{overflow:hidden}
+.pack-modal{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:22px}
+.pack-modal[hidden]{display:none}
+.pack-modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(9px)}
+.pack-modal-panel{position:relative;width:min(760px,100%);max-height:min(88vh,900px);overflow:auto;background:#17171d;border:1px solid #40353a;border-radius:8px;box-shadow:0 25px 100px rgba(0,0,0,.55)}
+.pack-modal-content{padding:36px}
+.pack-modal-close{position:absolute;right:14px;top:12px;width:36px;height:36px;border:1px solid #49434c;border-radius:50%;background:#211f26;color:#fff;font-size:25px;cursor:pointer;z-index:2}
+.modal-eyebrow{color:var(--orange);font-size:9px;letter-spacing:2px;font-weight:800;margin-bottom:22px}
+.modal-title-row{display:flex;align-items:center;gap:17px;padding-right:36px}
+.modal-icon{width:76px;height:76px;object-fit:cover;border-radius:10px;background:#25232b}
+.modal-title-row h2{font-size:clamp(23px,4vw,34px);line-height:1.15;margin:0 0 7px;letter-spacing:-1px}
+.modal-muted{font-size:11px;line-height:1.7;color:#aaa5b0;margin:0}
+.modal-description{font-size:13px;line-height:1.85;color:#d0cbd3;margin:25px 0}
+.modal-gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:20px 0}
+.modal-gallery img{width:100%;height:125px;object-fit:cover;border-radius:4px;background:#24232a}
+.modal-stats{display:grid;gap:9px;padding:17px 0;border-top:1px solid #302d36;border-bottom:1px solid #302d36;color:#9995a0;font-size:10px}
+.modal-stats b{color:#e8e4e9;font-weight:600}
+.modal-download-section{margin-top:23px;display:grid;gap:11px}
+.modal-download-section label{font-size:11px;color:#c9c4cc;font-weight:800}
+.modal-download-section select{width:100%;padding:13px;background:#101014;color:#eee;border:1px solid #39343d;border-radius:4px;font:inherit;font-size:11px}
+#packDownloadArea{display:flex;align-items:center;gap:13px;flex-wrap:wrap}
+.modal-download{width:max-content;gap:18px}
+.modal-file-meta{font-size:10px;color:#aaa5af;overflow-wrap:anywhere}
+.modal-project-link{display:inline-block;margin-top:23px;color:#ff9a68;font-size:10px}
+.modal-loading{text-align:center;padding:65px 20px;color:#c8c1ca;font-size:12px;line-height:1.8}
+.modal-loading .text-button{display:block;margin:15px auto 0}
+@media(max-width:600px){.pack-modal{padding:10px}.pack-modal-panel{max-height:94vh}.pack-modal-content{padding:25px 18px}.modal-gallery{grid-template-columns:repeat(2,minmax(0,1fr))}.modal-gallery img{height:100px}.modal-icon{width:58px;height:58px}.modal-title-row{gap:12px}}
