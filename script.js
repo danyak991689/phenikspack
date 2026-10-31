@@ -435,17 +435,23 @@ if (aiForm) aiForm.addEventListener("submit",function (event) {
   cat.setAttribute("aria-label","Котик PHENIKS AI");
   cat.innerHTML = '<span class="cat-bubble" aria-live="polite">Мяу! Я слежу за ресурс-паками.</span>' +
     '<span class="cat-body">' +
-      '<svg class="cat-art" viewBox="0 0 112 76" role="img" aria-label="Чёрный котик">' +
-        '<path class="cat-tail" d="M20 48 C2 42 4 20 18 17 C28 15 29 27 22 30" fill="none" stroke="#24232b" stroke-width="8" stroke-linecap="round"/>' +
-        '<path d="M25 42 Q29 22 52 25 Q76 22 84 43 Q89 59 68 62 L37 61 Q20 58 25 42Z" fill="#292831"/>' +
-        '<path d="M30 32 L28 9 Q27 4 33 9 L45 23 M66 23 L79 8 Q84 4 83 12 L80 35" fill="#292831" stroke="#17161d" stroke-width="2" stroke-linejoin="round"/>' +
-        '<path d="M34 16 L36 25 L42 23Z M72 24 L79 15 L77 28Z" fill="#d88991"/>' +
-        '<ellipse cx="57" cy="39" rx="25" ry="20" fill="#34323d"/>' +
-        '<ellipse cx="47" cy="39" rx="3" ry="4" fill="#ffb66d"/><ellipse cx="67" cy="39" rx="3" ry="4" fill="#ffb66d"/>' +
-        '<path d="M54 47 Q57 50 60 47" fill="none" stroke="#d88991" stroke-width="2" stroke-linecap="round"/>' +
-        '<path d="M40 46 L20 43 M40 50 L20 53 M73 46 L94 43 M73 50 L94 53" stroke="#aaa3b0" stroke-width="1.5" stroke-linecap="round"/>' +
-        '<path class="cat-leg leg-a" d="M34 55 Q30 64 25 65 M47 57 Q46 66 42 67 M68 57 Q69 65 74 66 M79 54 Q85 61 89 61" fill="none" stroke="#292831" stroke-width="7" stroke-linecap="round"/>' +
-        '<path d="M22 65 L29 65 M39 67 L46 67 M72 66 L78 66 M86 61 L92 61" stroke="#aaa3b0" stroke-width="2" stroke-linecap="round"/>' +
+      '<svg class="cat-art" viewBox="0 0 140 90" role="img" aria-label="Чёрный пушистый кот">' +
+        '<defs><linearGradient id="catFur" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#514e5a"/><stop offset=".48" stop-color="#302e38"/><stop offset="1" stop-color="#17171e"/></linearGradient><linearGradient id="catChest" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#77717d" stop-opacity=".55"/><stop offset="1" stop-color="#302e38" stop-opacity="0"/></linearGradient></defs>' +
+        '<path class="cat-tail" d="M34 57 C16 63 7 53 12 39 C16 28 28 30 27 40 C26 45 21 46 19 42" fill="none" stroke="#24232d" stroke-width="10" stroke-linecap="round"/>' +
+        '<path d="M34 52 Q35 37 54 36 Q75 32 96 44 Q108 51 106 64 Q104 76 85 76 L49 75 Q31 72 34 52Z" fill="url(#catFur)" stroke="#17161d" stroke-width="1.4"/>' +
+        '<path d="M42 45 Q58 36 77 43 Q88 47 91 64 Q78 71 62 68 Q48 65 42 45Z" fill="url(#catChest)" opacity=".8"/>' +
+        '<path class="cat-leg leg-back-a" d="M45 66 Q43 74 40 79 L48 80" fill="none" stroke="#292832" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '<path class="cat-leg leg-back-b" d="M61 67 Q61 75 57 80 L65 81" fill="none" stroke="#24232c" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '<path class="cat-leg leg-front-a" d="M85 65 Q88 73 85 80 L94 80" fill="none" stroke="#373540" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '<path class="cat-leg leg-front-b" d="M99 62 Q105 69 103 78 L112 78" fill="none" stroke="#292832" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '<path d="M78 43 Q77 25 91 18 Q103 10 117 20 Q129 29 123 46 Q119 61 103 62 Q84 60 78 43Z" fill="url(#catFur)" stroke="#17161d" stroke-width="1.5"/>' +
+        '<path d="M83 29 L80 8 Q80 3 86 7 L101 20 M108 19 L121 5 Q126 2 126 9 L124 31" fill="#302e38" stroke="#17161d" stroke-width="2" stroke-linejoin="round"/>' +
+        '<path d="M85 13 L88 24 L97 21Z M113 21 L122 11 L120 26Z" fill="#b97983" opacity=".9"/>' +
+        '<ellipse cx="94" cy="39" rx="3.1" ry="4.2" fill="#f4b45f"/><ellipse cx="113" cy="39" rx="3.1" ry="4.2" fill="#f4b45f"/>' +
+        '<ellipse cx="95" cy="39" rx="1.1" ry="2.8" fill="#17151b"/><ellipse cx="114" cy="39" rx="1.1" ry="2.8" fill="#17151b"/>' +
+        '<path d="M102 48 Q105 45 108 48 Q105 52 102 48Z" fill="#d88991"/><path d="M105 51 Q102 56 98 53 M105 51 Q109 56 113 53" fill="none" stroke="#d88991" stroke-width="1.4" stroke-linecap="round"/>' +
+        '<path d="M94 49 L79 46 M94 53 L78 55 M115 49 L131 46 M115 53 L131 56" stroke="#aaa3b0" stroke-width="1.1" stroke-linecap="round" opacity=".8"/>' +
+        '<path d="M37 49 Q40 43 44 41 M49 39 Q53 35 58 35 M66 38 Q71 37 75 40" fill="none" stroke="#77717e" stroke-width="1.1" opacity=".5" stroke-linecap="round"/>' +
       '</svg>' +
     '</span><span class="cat-name">PHENIKS AI</span>';
   document.body.appendChild(cat);
