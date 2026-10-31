@@ -35,6 +35,30 @@ function projectURL(pack) {
 function formatDownloads(value) {
   return new Intl.NumberFormat("ru-RU", {notation:"compact",maximumFractionDigits:1}).format(value || 0);
 }
+/* Per-pack visual identity inferred from title, description and tags */
+function getPackVisual(pack) {
+  const raw = [pack.title,pack.description,pack.author,(pack.categories||[]).join(' '),(pack.display_categories||[]).join(' ')].join(' ').toLowerCase().replace(/ё/g,'е');
+  const themes = [
+    {key:'fire',label:'ОГОНЬ',symbol:'✹',terms:['fire','flame','lava','nether','огонь','пламя','лава','незер']},
+    {key:'ice',label:'ЛЁД',symbol:'❄',terms:['ice','frost','snow','winter','лед','снег','зима','мороз']},
+    {key:'ocean',label:'ОКЕАН',symbol:'≈',terms:['ocean','sea','water','underwater','океан','море','вода','подвод']},
+    {key:'nature',label:'ПРИРОДА',symbol:'❧',terms:['nature','forest','leaves','flora','природ','лес','листь','трава','растен']},
+    {key:'magic',label:'МАГИЯ',symbol:'✧',terms:['magic','fantasy','enchanted','arcane','маг','волшеб','фэнтези','заклин']},
+    {key:'space',label:'КОСМОС',symbol:'✦',terms:['space','galaxy','cosmic','sci-fi','cyber','космос','галактик','кибер']},
+    {key:'medieval',label:'СРЕДНЕВЕКОВЬЕ',symbol:'⚔',terms:['medieval','knight','castle','dungeon','средневек','рыцар','замок']},
+    {key:'horror',label:'ТЬМА',symbol:'☾',terms:['horror','dark','spooky','creepy','хоррор','страш','мрач','тьма']},
+    {key:'pvp',label:'БОЕВОЙ СТИЛЬ',symbol:'⚡',terms:['pvp','combat','weapon','sword','дуэл','бой','оруж','меч']},
+    {key:'realism',label:'РЕАЛИЗМ',symbol:'◈',terms:['realistic','realism','photoreal','pbr','реализм','реалист']},
+    {key:'vanilla',label:'ВАНИЛЬНЫЙ СТИЛЬ',symbol:'▦',terms:['vanilla','faithful','default','ванил','ваниль','стандарт']},
+    {key:'cute',label:'МИЛЫЙ СТИЛЬ',symbol:'♡',terms:['cute','kawaii','pastel','pink','мил','няш','пастел','розов']}
+  ];
+  let selected=null,best=0;
+  themes.forEach(function(theme){let score=0;theme.terms.forEach(function(term){if(raw.includes(term))score+=term.length>5?2:1;});if(score>best){best=score;selected=theme;}});
+  if(!selected){const category=packCategory(pack).key;selected=({realism:themes[9],pvp:themes[8],vanilla:themes[10],atmosphere:themes[4]})[category]||{key:'mystery',label:'УНИКАЛЬНЫЙ ПАК',symbol:'✧'};}
+  let hash=2166136261;const seed=String(pack.project_id||pack.slug||pack.title||'pack');
+  for(let i=0;i<seed.length;i++){hash^=seed.charCodeAt(i);hash=Math.imul(hash,16777619);}
+  return {theme:selected,hue:(Math.abs(hash)%31)-15,drift:(Math.abs(hash>>>5)%7)+5,delay:-((Math.abs(hash>>>9)%40)/10)};
+}
 function render() {
   const query = search.value.trim().toLowerCase();
   const sourcePacks = aiAnalysis
@@ -58,6 +82,8 @@ function render() {
   }
   grid.innerHTML = visible.map(function (pack) {
     const category = packCategory(pack);
+    const visual = getPackVisual(pack);
+    const visualStyle = "--pack-hue:" + visual.hue + "deg;--pack-drift:" + visual.drift + "px;--pack-delay:" + visual.delay + "s";
     const saved = favorites.has(pack.project_id);
     const cover = pack.icon_url
       ? '<img class="pack-source-icon" src="' + escapeHTML(pack.icon_url) + '" alt="" loading="lazy" referrerpolicy="no-referrer">'
@@ -65,7 +91,9 @@ function render() {
     const versions = (pack.versions || []).slice(0, 5).join(", ");
     const moreVersions = (pack.versions || []).length > 5 ? " +" + ((pack.versions || []).length - 5) : "";
     return '<article class="pack-card">' +
-      '<div class="pack-cover source-cover">' +
+      '<div class="pack-cover source-cover pack-visual-' + visual.theme.key + '" style="' + visualStyle + '">' +
+        '<span class="pack-atmosphere" aria-hidden="true"><i class="pack-atmosphere-orbit"></i><i class="pack-atmosphere-glow"></i><i class="pack-atmosphere-particle particle-a"></i><i class="pack-atmosphere-particle particle-b"></i><i class="pack-atmosphere-particle particle-c"></i><b class="pack-atmosphere-symbol">' + visual.theme.symbol + '</b></span>' +
+        '<span class="pack-vibe-label">' + visual.theme.label + '</span>' +
         '<span class="cover-tag">' + escapeHTML(category.label) + '</span>' +
         '<button class="favorite-button ' + (saved ? "saved" : "") + '" data-favorite="' + escapeHTML(pack.project_id) + '" aria-label="' + (saved ? "Убрать из избранного" : "Добавить в избранное") + '">' + (saved ? "♥" : "♡") + '</button>' +
         cover +
