@@ -750,9 +750,32 @@ if(aiForm)aiForm.addEventListener("submit",function(event){event.preventDefault(
 })();
 
 
-/* Pixel totem split animation on every resource-pack download */
+/* Minecraft Totem of Undying rises and splits on every resource-pack download */
 (function initTotemDownloadEffect() {
   let activeOverlay = null;
+  const pixelTotem =
+    '<svg class="totem-art" viewBox="0 0 96 144" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges" aria-hidden="true">' +
+      '<rect x="30" y="4" width="36" height="8" fill="#382b18"/><rect x="22" y="12" width="52" height="8" fill="#382b18"/>' +
+      '<rect x="18" y="20" width="60" height="28" fill="#382b18"/><rect x="24" y="48" width="48" height="12" fill="#382b18"/>' +
+      '<rect x="8" y="56" width="80" height="20" fill="#382b18"/><rect x="16" y="76" width="64" height="24" fill="#382b18"/>' +
+      '<rect x="24" y="100" width="48" height="28" fill="#382b18"/><rect x="28" y="128" width="16" height="12" fill="#382b18"/><rect x="52" y="128" width="16" height="12" fill="#382b18"/>' +
+      '<rect x="32" y="8" width="32" height="8" fill="#d8b45b"/><rect x="24" y="16" width="48" height="8" fill="#d8b45b"/>' +
+      '<rect x="20" y="24" width="56" height="20" fill="#b58b3e"/><rect x="28" y="44" width="40" height="12" fill="#b58b3e"/>' +
+      '<rect x="12" y="60" width="72" height="12" fill="#d1a84e"/><rect x="20" y="72" width="56" height="24" fill="#b58b3e"/>' +
+      '<rect x="28" y="96" width="40" height="32" fill="#b58b3e"/><rect x="32" y="128" width="12" height="8" fill="#8d6a35"/><rect x="52" y="128" width="12" height="8" fill="#8d6a35"/>' +
+      '<rect x="28" y="24" width="40" height="24" fill="#8bba65"/><rect x="32" y="20" width="32" height="8" fill="#a6d77a"/>' +
+      '<rect x="24" y="28" width="8" height="16" fill="#6f9d52"/><rect x="64" y="28" width="8" height="16" fill="#6f9d52"/>' +
+      '<rect x="32" y="32" width="8" height="8" fill="#2d573e"/><rect x="56" y="32" width="8" height="8" fill="#2d573e"/>' +
+      '<rect x="32" y="32" width="4" height="4" fill="#a5ff7b"/><rect x="56" y="32" width="4" height="4" fill="#a5ff7b"/>' +
+      '<rect x="40" y="44" width="16" height="4" fill="#d9e3a1"/>' +
+      '<rect x="16" y="60" width="64" height="8" fill="#e0bf68"/><rect x="24" y="72" width="48" height="8" fill="#d7b45c"/>' +
+      '<rect x="40" y="76" width="16" height="24" fill="#4f9b83"/><rect x="36" y="80" width="24" height="12" fill="#73c6a2"/>' +
+      '<rect x="44" y="80" width="8" height="8" fill="#b8f0c8"/><rect x="40" y="92" width="16" height="8" fill="#28745f"/>' +
+      '<rect x="32" y="104" width="12" height="24" fill="#d5b45d"/><rect x="52" y="104" width="12" height="24" fill="#d5b45d"/>' +
+      '<rect x="32" y="128" width="12" height="8" fill="#f0d47b"/><rect x="52" y="128" width="12" height="8" fill="#f0d47b"/>' +
+      '<rect x="12" y="64" width="8" height="8" fill="#f0d47b"/><rect x="76" y="64" width="8" height="8" fill="#f0d47b"/>' +
+      '<rect x="24" y="52" width="8" height="8" fill="#e8ca79"/><rect x="64" y="52" width="8" height="8" fill="#e8ca79"/>' +
+    '</svg>';
   function playTotemBreak() {
     if (activeOverlay) activeOverlay.remove();
     const overlay = document.createElement("div");
@@ -760,14 +783,12 @@ if(aiForm)aiForm.addEventListener("submit",function(event){event.preventDefault(
     overlay.setAttribute("aria-hidden", "true");
     overlay.innerHTML =
       '<div class="totem-break-scene">' +
-        '<div class="totem-beam"></div>' +
-        '<div class="totem-flash"></div>' +
-        '<div class="totem-pixel-sparks"></div>' +
+        '<div class="totem-beam"></div><div class="totem-flash"></div>' +
         '<div class="totem-sprite">' +
-          '<div class="totem-half totem-half-left"><i class="totem-eye"></i><i class="totem-gem"></i></div>' +
-          '<div class="totem-half totem-half-right"><i class="totem-eye"></i><i class="totem-gem"></i></div>' +
+          '<div class="totem-half totem-half-left">' + pixelTotem + '</div>' +
+          '<div class="totem-half totem-half-right">' + pixelTotem + '</div>' +
         '</div>' +
-        '<div class="totem-ground-glow"></div>' +
+        '<div class="totem-ground-glow"></div><div class="totem-pixel-burst"></div>' +
       '</div>';
     document.body.appendChild(overlay);
     activeOverlay = overlay;
@@ -776,7 +797,7 @@ if(aiForm)aiForm.addEventListener("submit",function(event){event.preventDefault(
         overlay.remove();
         activeOverlay = null;
       }
-    }, 2300);
+    }, 3000);
   }
   document.addEventListener("click", function (event) {
     const downloadLink = event.target.closest && event.target.closest("a.modal-download");
@@ -784,5 +805,4 @@ if(aiForm)aiForm.addEventListener("submit",function(event){event.preventDefault(
     playTotemBreak();
   });
 })();
-
 loadCatalog();
