@@ -435,26 +435,31 @@ if (aiForm) aiForm.addEventListener("submit",function (event) {
   cat.setAttribute("aria-label","Котик PHENIKS AI");
   cat.innerHTML = '<span class="cat-bubble" aria-live="polite">Мяу! Я слежу за ресурс-паками.</span>' +
     '<span class="cat-body">' +
-      '<svg class="cat-art" viewBox="0 0 140 90" role="img" aria-label="Милый чёрный котик">' +
-        '<defs><linearGradient id="cuteFur" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#625d6b"/><stop offset="1" stop-color="#302d39"/></linearGradient><linearGradient id="cuteBelly" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#e8dce0"/><stop offset="1" stop-color="#b8aab8"/></linearGradient></defs>' +
-        '<path class="cat-tail" d="M32 59 C15 68 7 56 12 43 C16 33 27 34 27 43" fill="none" stroke="#383441" stroke-width="10" stroke-linecap="round"/>' +
-        '<ellipse cx="66" cy="58" rx="39" ry="20" fill="url(#cuteFur)"/>' +
-        '<ellipse cx="69" cy="61" rx="20" ry="12" fill="url(#cuteBelly)" opacity=".92"/>' +
-        '<path class="cat-leg leg-back-a" d="M43 67 Q39 74 41 80 L49 80" fill="none" stroke="#373340" stroke-width="9" stroke-linecap="round"/>' +
-        '<path class="cat-leg leg-back-b" d="M58 68 Q56 75 58 80 L66 80" fill="none" stroke="#45404d" stroke-width="9" stroke-linecap="round"/>' +
-        '<path class="cat-leg leg-front-a" d="M83 66 Q82 74 84 80 L92 80" fill="none" stroke="#45404d" stroke-width="9" stroke-linecap="round"/>' +
-        '<path class="cat-leg leg-front-b" d="M98 63 Q103 71 101 79 L109 79" fill="none" stroke="#373340" stroke-width="9" stroke-linecap="round"/>' +
-        '<path d="M37 39 Q35 15 57 13 Q65 12 71 18 Q85 5 101 17 Q115 28 108 48 Q102 64 78 63 Q52 65 41 52 Q36 47 37 39Z" fill="url(#cuteFur)" stroke="#24212b" stroke-width="1.5"/>' +
-        '<path d="M43 27 L42 8 Q42 3 48 8 L61 19 M85 18 L99 7 Q104 3 104 10 L101 29" fill="#484351" stroke="#24212b" stroke-width="2" stroke-linejoin="round"/>' +
-        '<path d="M48 13 L50 23 L58 21Z M90 21 L100 12 L98 25Z" fill="#e8a2b2"/>' +
-        '<ellipse cx="58" cy="37" rx="7" ry="9" fill="#f7d28c"/><ellipse cx="88" cy="37" rx="7" ry="9" fill="#f7d28c"/>' +
-        '<ellipse cx="59" cy="38" rx="3.1" ry="5.7" fill="#29232e"/><ellipse cx="87" cy="38" rx="3.1" ry="5.7" fill="#29232e"/>' +
-        '<circle cx="57" cy="34" r="2" fill="#fff"/><circle cx="85" cy="34" r="2" fill="#fff"/>' +
-        '<ellipse cx="48" cy="48" rx="6" ry="3.5" fill="#d98e9f" opacity=".62"/><ellipse cx="98" cy="48" rx="6" ry="3.5" fill="#d98e9f" opacity=".62"/>' +
-        '<ellipse cx="73" cy="47" rx="4" ry="3" fill="#e99aa9"/><path d="M73 50 Q69 56 65 52 M73 50 Q77 56 81 52" fill="none" stroke="#e5b7c1" stroke-width="1.6" stroke-linecap="round"/>' +
-        '<path d="M57 49 L43 47 M57 53 L43 55 M90 49 L104 47 M90 53 L104 55" stroke="#d6cbd8" stroke-width="1.2" stroke-linecap="round"/>' +
-        '<path d="M51 26 Q58 23 64 27 M82 27 Q89 23 95 26" fill="none" stroke="#25212b" stroke-width="2" stroke-linecap="round"/>' +
-        '</svg>' +      '</svg>' +
+      '<svg class="cat-art" viewBox="0 0 160 100" role="img" aria-label="Чёрный домашний кот с янтарными глазами">' +
+        '<defs>' +
+          '<linearGradient id="realFur" x1="0" y1="0" x2="0.8" y2="1"><stop stop-color="#77727b"/><stop offset=".42" stop-color="#45414b"/><stop offset="1" stop-color="#211f28"/></linearGradient>' +
+          '<linearGradient id="realHead" x1=".2" y1="0" x2=".8" y2="1"><stop stop-color="#716c76"/><stop offset=".55" stop-color="#403c47"/><stop offset="1" stop-color="#25232c"/></linearGradient>' +
+          '<radialGradient id="realEye"><stop stop-color="#f6d58a"/><stop offset=".65" stop-color="#c18b43"/><stop offset="1" stop-color="#654329"/></radialGradient>' +
+          '<linearGradient id="realChest" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#bcb5bd"/><stop offset=".5" stop-color="#eee8e9"/><stop offset="1" stop-color="#99929d"/></linearGradient>' +
+        '</defs>' +
+        '<path class="cat-tail" d="M39 68 C23 78 12 71 13 59 C13 49 23 44 30 51 C35 56 30 63 26 62" fill="none" stroke="#302d36" stroke-width="10" stroke-linecap="round"/>' +
+        '<path d="M39 63 C49 43 78 39 108 48 Q130 54 133 69 Q128 80 108 80 L52 79 Q39 76 39 63Z" fill="url(#realFur)" stroke="#211f27" stroke-width="1.5"/>' +
+        '<path d="M76 52 Q91 48 105 57 Q117 65 115 79 L87 80 Q74 68 76 52Z" fill="url(#realChest)" opacity=".9"/>' +
+        '<path d="M48 72 Q44 80 47 88 L56 88 M67 74 Q65 82 68 89 L77 89 M111 73 Q116 80 113 88 L122 88 M128 70 Q134 78 131 87 L139 87" fill="none" stroke="#37333d" stroke-width="8" stroke-linecap="round"/>' +
+        '<path d="M43 51 Q38 38 44 25 Q49 13 63 13 Q75 11 83 20 Q94 12 106 20 Q119 29 115 45 Q111 61 91 64 Q68 68 52 60 Q46 57 43 51Z" fill="url(#realHead)" stroke="#211f27" stroke-width="1.6"/>' +
+        '<path d="M48 29 L45 8 Q45 3 51 8 L66 21 M91 20 L108 7 Q113 4 113 11 L109 31" fill="#45414b" stroke="#211f27" stroke-width="2.2" stroke-linejoin="round"/>' +
+        '<path d="M51 13 L53 25 L63 22Z M96 22 L107 12 L105 26Z" fill="#9d7c83" opacity=".85"/>' +
+        '<path d="M49 37 Q57 30 67 36 Q70 43 64 48 Q55 50 50 44Z M88 36 Q98 30 107 37 Q108 45 101 48 Q91 49 88 42Z" fill="url(#realEye)" stroke="#201e26" stroke-width="1"/>' +
+        '<ellipse cx="60" cy="41" rx="2.2" ry="6" fill="#17151b"/><ellipse cx="98" cy="41" rx="2.2" ry="6" fill="#17151b"/>' +
+        '<circle cx="56" cy="37" r="1.8" fill="#fff" opacity=".9"/><circle cx="94" cy="37" r="1.8" fill="#fff" opacity=".9"/>' +
+        '<path d="M49 34 Q57 28 67 33 M88 33 Q98 28 107 34" fill="none" stroke="#25222b" stroke-width="2.4" stroke-linecap="round"/>' +
+        '<path d="M57 49 Q66 44 75 49 Q81 45 91 49 Q91 58 75 60 Q60 58 57 49Z" fill="#b9adb4" opacity=".9"/>' +
+        '<path d="M72 50 Q75 47 78 50 Q77 54 75 54 Q72 53 72 50Z" fill="#bd8290"/>' +
+        '<path d="M75 54 Q70 59 66 56 M75 54 Q80 59 84 56" fill="none" stroke="#d4c4cb" stroke-width="1.3" stroke-linecap="round"/>' +
+        '<path d="M63 52 L43 49 M63 55 L42 57 M87 52 L108 49 M87 55 L109 58" fill="none" stroke="#d8d0d5" stroke-width="1" stroke-linecap="round" opacity=".85"/>' +
+        '<path d="M42 43 Q45 38 47 35 M111 40 Q116 35 117 31 M53 19 Q58 16 63 18 M101 18 Q106 17 109 21" fill="none" stroke="#918a96" stroke-width="1" opacity=".45"/>' +
+        '<path d="M43 57 Q39 61 35 61 M47 61 Q43 66 39 66 M116 56 Q121 60 125 59" fill="none" stroke="#77717d" stroke-width="1.2" opacity=".55"/>' +
+      '</svg>' +
     '</span><span class="cat-name">PHENIKS AI</span>';
   document.body.appendChild(cat);
 
