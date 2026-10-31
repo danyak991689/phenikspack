@@ -204,6 +204,132 @@ nav.querySelectorAll("a").forEach(function (link) {
   });
 });
 
+
+/* PHENIKSPACK local player profile */
+(function initPlayerProfile() {
+  const profileButton = document.querySelector("#profileButton");
+  if (!profileButton) return;
+  const profileAvatar = document.querySelector("#profileButtonAvatar");
+  const profileLabel = document.querySelector("#profileButtonLabel");
+  const storageKey = "phenikspack-player-profile";
+  const defaultProfile = {name:"Игрок Minecraft", avatar:"PH", recent:[], downloads:[]};
+  let profile = defaultProfile;
+  try {
+    const saved = JSON.parse(localStorage.getItem(storageKey) || "null");
+    if (saved && typeof saved === "object") {
+      profile = {
+        name: typeof saved.name === "string" && saved.name.trim() ? saved.name.trim().slice(0,24) : defaultProfile.name,
+        avatar: typeof saved.avatar === "string" && saved.avatar ? saved.avatar : defaultProfile.avatar,
+        recent: Array.isArray(saved.recent) ? saved.recent.slice(0,8) : [],
+        downloads: Array.isArray(saved.downloads) ? saved.downloads.slice(0,8) : []
+      };
+    }
+  } catch (_) {}
+
+  const profileModal = document.createElement("div");
+  profileModal.className = "profile-modal";
+  profileModal.hidden = true;
+  profileModal.innerHTML =
+    '<div class="profile-backdrop" data-profile-close></div>' +
+    '<section class="profile-panel" role="dialog" aria-modal="true" aria-labelledby="profileTitle">' +
+      '<button class="profile-close" type="button" aria-label="Закрыть" data-profile-close>×</button>' +
+      '<div class="profile-kicker">PHENIKSPACK / PLAYER SPACE</div>' +
+      '<div class="profile-heading"><div class="profile-large-avatar" id="profileLargeAvatar">PH</div><div><h2 id="profileTitle">Личный кабинет</h2><p class="profile-muted">Твой уголок в мире ресурспаков</p></div></div>' +
+      '<form class="profile-edit-form" id="profileEditForm">' +
+        '<label for="profileNameInput">Твой никнейм</label><input id="profileNameInput" maxlength="24" autocomplete="nickname" placeholder="Например, Phoenix">' +
+        '<label for="profileAvatarSelect">Аватар</label><select id="profileAvatarSelect"><option value="PH">PH · Феникс</option><option value="⚔">⚔ · Воин</option><option value="⛏">⛏ · Шахтёр</option><option value="🐺">🐺 · Волк</option><option value="🌙">🌙 · Ночная смена</option><option value="🔥">🔥 · Огонь</option></select>' +
+        '<button class="button button-primary profile-save" type="submit">Сохранить профиль <span>→</span></button>' +
+      '</form>' +
+      '<div class="profile-stats" id="profileStats"></div>' +
+      '<div class="profile-columns"><section><div class="profile-section-title">ПОСЛЕДНИЕ ПРОСМОТРЫ</div><div class="profile-activity" id="profileRecent"></div></section>' +
+      '<section><div class="profile-section-title">НЕДАВНИЕ СКАЧИВАНИЯ</div><div class="profile-activity" id="profileDownloads"></div></section></div>' +
+      '<p class="profile-local-note"><span>i</span> Профиль хранится только в этом браузере на этом устройстве. Пока это локальный профиль, а не аккаунт с паролем и синхронизацией.</p>' +
+    '</section>';
+  document.body.appendChild(profileModal);
+
+  function persist() {
+    try { localStorage.setItem(storageKey, JSON.stringify(profile)); } catch (_) {}
+    updateProfileButton();
+    renderProfile();
+  }
+  function updateProfileButton() {
+    profileAvatar.textContent = profile.avatar;
+    profileLabel.textContent = profile.name;
+  }
+  function dateLabel(value) {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "Недавно";
+    return new Intl.DateTimeFormat("ru-RU", {day:"numeric",month:"short"}).format(date);
+  }
+  function activityMarkup(items, emptyText) {
+    if (!items.length) return '<p class="profile-empty">' + escapeHTML(emptyText) + '</p>';
+    return items.slice(0,5).map(function(item) {
+      return '<div class="profile-activity-item">' +
+        (item.icon ? '<img src="' + escapeHTML(item.icon) + '" alt="" loading="lazy">' : '<span class="profile-activity-placeholder">◇</span>') +
+        '<div><b>' + escapeHTML(item.title || "Без названия") + '</b><small>' + dateLabel(item.date) + '</small></div>' +
+      '</div>';
+    }).join("");
+  }
+  function renderProfile() {
+    const largeAvatar = profileModal.querySelector("#profileLargeAvatar");
+    const nameInput = profileModal.querySelector("#profileNameInput");
+    const avatarSelect = profileModal.querySelector("#profileAvatarSelect");
+    if (largeAvatar) largeAvatar.textContent = profile.avatar;
+    if (nameInput && document.activeElement !== nameInput) nameInput.value = profile.name;
+    if (avatarSelect) avatarSelect.value = profile.avatar;
+    profileModal.querySelector("#profileStats").innerHTML =
+      '<div><b>' + favorites.size + '</b><span>В избранном</span></div>' +
+      '<div><b>' + profile.recent.length + '</b><span>Просмотрено</span></div>' +
+      '<div><b>' + profile.downloads.length + '</b><span>Скачиваний</span></div>';
+    profileModal.querySelector("#profileRecent").innerHTML = activityMarkup(profile.recent,"Здесь появятся паки, которые ты откроешь.");
+    profileModal.querySelector("#profileDownloads").innerHTML = activityMarkup(profile.downloads,"Скачанные паки появятся здесь.");
+  }
+  function record(listName, pack) {
+    if (!pack) return;
+    const list = profile[listName];
+    const entry = {id:pack.project_id,title:pack.title || "Ресурспак",icon:pack.icon_url || "",date:new Date().toISOString()};
+    const next = [entry].concat(list.filter(function(item){return item.id !== entry.id;})).slice(0,8);
+    profile[listName] = next;
+    persist();
+  }
+  window.pheniksProfileRecordView = record;
+  window.pheniksProfileRecordDownload = record;
+  profileButton.addEventListener("click", function() {
+    renderProfile();
+    profileModal.hidden = false;
+    document.body.classList.add("profile-open");
+  });
+  profileModal.addEventListener("click", function(event) {
+    if (event.target.closest("[data-profile-close]")) {
+      profileModal.hidden = true;
+      document.body.classList.remove("profile-open");
+    }
+  });
+  profileModal.querySelector("#profileEditForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+    const name = profileModal.querySelector("#profileNameInput").value.trim();
+    if (!name) {
+      profileModal.querySelector("#profileNameInput").focus();
+      return;
+    }
+    profile.name = name.slice(0,24);
+    profile.avatar = profileModal.querySelector("#profileAvatarSelect").value;
+    persist();
+    const saveButton = profileModal.querySelector(".profile-save");
+    saveButton.innerHTML = "Сохранено <span>✓</span>";
+    window.setTimeout(function(){saveButton.innerHTML = 'Сохранить профиль <span>→</span>';},1400);
+  });
+  document.addEventListener("keydown", function(event) {
+    if (event.key === "Escape" && !profileModal.hidden) {
+      profileModal.hidden = true;
+      document.body.classList.remove("profile-open");
+    }
+  });
+  updateProfileButton();
+  renderProfile();
+})();
+
+
 /* In-site resource-pack details and downloads */
 const detailModal = document.createElement("div");
 detailModal.className = "pack-modal";
@@ -243,6 +369,7 @@ function renderVersionFiles(version) {
 async function openPackDetails(projectId) {
   const pack = packs.find(function (item) { return item.project_id === projectId; });
   if (!pack) return;
+  if (window.pheniksProfileRecordView) window.pheniksProfileRecordView("recent", pack);
   detailModal.hidden = false;
   document.body.classList.add("modal-open");
   detailModal.querySelector("#packModalContent").innerHTML = '<div class="modal-loading">Загружаю описание, версии и файлы…</div>';
@@ -800,6 +927,11 @@ if(aiForm)aiForm.addEventListener("submit",function(event){event.preventDefault(
   document.addEventListener("click", function (event) {
     const downloadLink = event.target.closest && event.target.closest("a.modal-download");
     if (!downloadLink) return;
+    if (window.pheniksProfileRecordDownload) {
+      const title = detailModal.querySelector("#packModalTitle");
+      const pack = packs.find(function(item){return item.title === (title && title.textContent);});
+      if (pack) window.pheniksProfileRecordDownload("downloads", pack);
+    }
     playSwordDissolve();
   });
 })();
