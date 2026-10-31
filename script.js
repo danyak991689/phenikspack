@@ -804,3 +804,30 @@ if (aiForm) aiForm.addEventListener("submit",function (event) {
 
 
 loadCatalog();
+
+
+/* Style index interactions */
+(function initStyleIndex(){
+  const cards=Array.from(document.querySelectorAll(".style-card[data-style-query]"));
+  const aiField=document.getElementById("aiQueryInput");
+  const aiForm=document.getElementById("aiSearchForm");
+  const catalog=document.getElementById("catalog");
+  function chooseStyle(query){
+    if(!aiField||!aiForm)return;
+    aiField.value=query;
+    aiForm.dispatchEvent(new Event("submit",{bubbles:true,cancelable:true}));
+    if(catalog)catalog.scrollIntoView({behavior:"smooth",block:"start"});
+  }
+  cards.forEach(function(card){
+    card.addEventListener("click",function(){chooseStyle(card.dataset.styleQuery||"");});
+  });
+  const randomButton=document.getElementById("randomStyleButton");
+  if(randomButton){
+    randomButton.addEventListener("click",function(){
+      if(!cards.length)return;
+      const options=cards.filter(function(card){return card.dataset.styleQuery;});
+      const choice=options[Math.floor(Math.random()*options.length)];
+      chooseStyle(choice.dataset.styleQuery);
+    });
+  }
+})();
