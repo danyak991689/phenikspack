@@ -424,14 +424,40 @@ function renderVersionFiles(version) {
     '<span class="modal-file-meta">' + escapeHTML(file.filename) + ' · ' + formatBytes(file.size) + '</span>';
 }
 let activeProfilePack = null;
+let packDetailsRequestId = 0;
+function packLoadingMarkup(pack) {
+  const source = String(pack.project_id || pack.title || "pheniks");
+  let hash = 2166136261;
+  for (let i = 0; i < source.length; i++) {
+    hash ^= source.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  hash >>>= 0;
+  const hue = hash % 360;
+  const style = hash % 7;
+  const glyphs = ["✦","◆","⬡","✧","◈","✺","▣"];
+  const glyph = glyphs[(hash >>> 4) % glyphs.length];
+  const speed = (2.1 + ((hash >>> 9) % 14) / 10).toFixed(2);
+  const delay = (((hash >>> 16) % 12) / 10).toFixed(2);
+  const styleName = ["Сборка пикселей","Энергетический импульс","Геометрическая сборка","Сканирование текстур","Орбитальная синхронизация","Кристаллизация","Световой резонанс"][style];
+  return '<div class="pack-loading-screen pack-loader-style-' + style + '" style="--loader-hue:' + hue + ';--loader-speed:' + speed + 's;--loader-delay:-' + delay + 's">' +
+    '<div class="pack-loader-art" aria-hidden="true"><span class="loader-orbit loader-orbit-a"></span><span class="loader-orbit loader-orbit-b"></span><span class="loader-orbit loader-orbit-c"></span><span class="loader-core">' + glyph + '</span><i class="loader-pixel loader-pixel-a"></i><i class="loader-pixel loader-pixel-b"></i><i class="loader-pixel loader-pixel-c"></i><i class="loader-pixel loader-pixel-d"></i></div>' +
+    '<div class="pack-loader-kicker">PHENIKSPACK / DATA LINK</div>' +
+    '<h2 class="pack-loader-title">' + escapeHTML(pack.title || "Ресурспак") + '</h2>' +
+    '<p class="pack-loader-status">' + styleName + '<span class="loader-dots"><i></i><i></i><i></i></span></p>' +
+    '<div class="pack-loader-track"><span></span></div>' +
+    '<small>Получаем описание, версии и файлы с Modrinth</small>' +
+  '</div>';
+}
 async function openPackDetails(projectId) {
   const pack = packs.find(function (item) { return item.project_id === projectId; });
   if (!pack) return;
+  const requestId = ++packDetailsRequestId;
   activeProfilePack = pack;
   if (window.pheniksProfileRecordView) window.pheniksProfileRecordView("recent", pack);
   detailModal.hidden = false;
   document.body.classList.add("modal-open");
-  detailModal.querySelector("#packModalContent").innerHTML = '<div class="modal-loading">Загружаю описание, версии и файлы…</div>';
+  detailModal.querySelector("#packModalContent").innerHTML = packLoadingMarkup(pack);
   try {
     const responses = await Promise.all([
       fetch("https://api.modrinth.com/v2/project/" + encodeURIComponent(projectId)),
@@ -439,7 +465,9 @@ async function openPackDetails(projectId) {
     ]);
     if (!responses[0].ok || !responses[1].ok) throw new Error("Не удалось получить данные проекта");
     const project = await responses[0].json();
-    activePackVersions = await responses[1].json();
+    const versions = await responses[1].json();
+    if (requestId !== packDetailsRequestId || detailModal.hidden) return;
+    activePackVersions = versions;
     const latest = activePackVersions[0];
     const gallery = (project.gallery || []).slice(0, 6);
     const galleryHTML = gallery.length
@@ -474,6 +502,7 @@ async function openPackDetails(projectId) {
       if (latest) renderVersionFiles(latest);
     }
   } catch (error) {
+    if (requestId !== packDetailsRequestId || detailModal.hidden) return;
     console.error(error);
     detailModal.querySelector("#packModalContent").innerHTML =
       '<div class="modal-loading">Не удалось загрузить подробности. Проверь подключение и попробуй ещё раз.' +
@@ -483,6 +512,7 @@ async function openPackDetails(projectId) {
   }
 }
 function closePackModal() {
+  packDetailsRequestId++;
   detailModal.hidden = true;
   document.body.classList.remove("modal-open");
 }
