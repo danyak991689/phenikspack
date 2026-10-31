@@ -750,26 +750,29 @@ if(aiForm)aiForm.addEventListener("submit",function(event){event.preventDefault(
 })();
 
 
-/* Giant sword descends and dissolves in a beam of light on resource-pack download */
+/* Minecraft iron sword drops point-first, embeds at the bottom edge, then dissolves in light */
 (function initSwordDownloadEffect() {
   let activeOverlay = null;
   const swordArt =
-    '<svg class="sword-art" viewBox="0 0 120 440" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
-      '<defs>' +
-        '<linearGradient id="bladeSteel" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#536477"/><stop offset=".22" stop-color="#e8f5ff"/><stop offset=".48" stop-color="#fff"/><stop offset=".72" stop-color="#a7c4d9"/><stop offset="1" stop-color="#35485e"/></linearGradient>' +
-        '<linearGradient id="goldGuard" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff0a8"/><stop offset=".45" stop-color="#d49a3e"/><stop offset="1" stop-color="#75451f"/></linearGradient>' +
-        '<linearGradient id="gripLeather" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#241c20"/><stop offset=".5" stop-color="#8a4c36"/><stop offset="1" stop-color="#21191e"/></linearGradient>' +
-      '</defs>' +
-      '<path d="M60 5 L89 292 L60 330 L31 292 Z" fill="#243244" opacity=".7"/>' +
-      '<path d="M60 5 L82 286 L60 316 L38 286 Z" fill="url(#bladeSteel)" stroke="#e8f4ff" stroke-width="2"/>' +
-      '<path d="M60 14 L60 310 L43 285 Z" fill="#fff" opacity=".42"/>' +
-      '<path d="M38 282 L82 282 L91 303 Q60 324 29 303 Z" fill="url(#goldGuard)" stroke="#fff0bb" stroke-width="3"/>' +
-      '<path d="M26 299 Q60 325 94 299 L104 312 Q60 354 16 312 Z" fill="url(#goldGuard)" stroke="#a66a2d" stroke-width="3"/>' +
-      '<path d="M54 326 L66 326 L70 398 L50 398 Z" fill="url(#gripLeather)" stroke="#d5a36b" stroke-width="2"/>' +
-      '<path d="M50 341 L70 351 M50 358 L70 368 M50 375 L70 385" stroke="#e4c18c" stroke-width="5"/>' +
-      '<path d="M43 399 Q60 389 77 399 L82 420 Q60 435 38 420 Z" fill="url(#goldGuard)" stroke="#fff0bb" stroke-width="3"/>' +
-      '<circle cx="60" cy="412" r="7" fill="#dff7ff" stroke="#80512c" stroke-width="3"/>' +
-      '<path d="M60 8 L60 315" stroke="#fff" stroke-width="2" opacity=".55"/>' +
+    '<svg class="sword-art" viewBox="0 0 128 384" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges" aria-hidden="true">' +
+      '<rect x="48" y="8" width="32" height="16" fill="#343b45"/><rect x="40" y="24" width="48" height="16" fill="#454f5c"/>' +
+      '<rect x="40" y="40" width="48" height="24" fill="#aeb9c5"/><rect x="48" y="40" width="32" height="16" fill="#e6edf2"/>' +
+      '<rect x="32" y="64" width="64" height="16" fill="#7d8996"/><rect x="24" y="80" width="80" height="16" fill="#c8d1d9"/>' +
+      '<rect x="16" y="96" width="96" height="16" fill="#737f8d"/><rect x="24" y="112" width="80" height="16" fill="#d9e0e6"/>' +
+      '<rect x="32" y="128" width="64" height="16" fill="#9eabb8"/><rect x="40" y="144" width="48" height="16" fill="#e8eef2"/>' +
+      '<rect x="40" y="160" width="48" height="16" fill="#8996a3"/><rect x="48" y="176" width="32" height="16" fill="#d8e0e7"/>' +
+      '<rect x="48" y="192" width="32" height="16" fill="#8996a3"/><rect x="48" y="208" width="32" height="16" fill="#dce4ea"/>' +
+      '<rect x="48" y="224" width="32" height="16" fill="#8996a3"/><rect x="48" y="240" width="32" height="16" fill="#dce4ea"/>' +
+      '<rect x="48" y="256" width="32" height="16" fill="#8996a3"/><rect x="48" y="272" width="32" height="16" fill="#dce4ea"/>' +
+      '<rect x="48" y="288" width="32" height="16" fill="#8996a3"/><rect x="48" y="304" width="32" height="16" fill="#dce4ea"/>' +
+      '<rect x="48" y="320" width="32" height="16" fill="#8996a3"/><rect x="48" y="336" width="32" height="16" fill="#dce4ea"/>' +
+      '<path d="M48 352 H80 L64 376 Z" fill="#aebbc7"/><path d="M64 352 H80 L64 376 Z" fill="#eef4f8"/>' +
+      '<rect x="8" y="32" width="112" height="16" fill="#9da9b4"/><rect x="16" y="48" width="96" height="16" fill="#dce3e9"/>' +
+      '<rect x="48" y="8" width="32" height="16" fill="#4b342b"/><rect x="40" y="24" width="48" height="16" fill="#76513b"/>' +
+      '<rect x="48" y="8" width="16" height="48" fill="#b9c3cc"/><rect x="64" y="8" width="16" height="48" fill="#7f8b97"/>' +
+      '<rect x="48" y="40" width="32" height="16" fill="#4b342b"/><rect x="40" y="56" width="48" height="16" fill="#76513b"/>' +
+      '<rect x="48" y="72" width="32" height="16" fill="#4b342b"/><rect x="48" y="88" width="32" height="16" fill="#76513b"/>' +
+      '<rect x="40" y="104" width="48" height="16" fill="#aeb9c5"/><rect x="48" y="104" width="32" height="8" fill="#e8eef2"/>' +
     '</svg>';
   function playSwordDissolve() {
     if (activeOverlay) activeOverlay.remove();
@@ -780,6 +783,7 @@ if(aiForm)aiForm.addEventListener("submit",function(event){event.preventDefault(
       '<div class="sword-effect-scene">' +
         '<div class="sword-aura"></div>' +
         '<div class="sword-sprite">' + swordArt + '</div>' +
+        '<div class="sword-impact-ring"></div>' +
         '<div class="sword-light-beam"></div>' +
         '<div class="sword-light-flash"></div>' +
         '<div class="sword-particles"></div>' +
@@ -791,7 +795,7 @@ if(aiForm)aiForm.addEventListener("submit",function(event){event.preventDefault(
         overlay.remove();
         activeOverlay = null;
       }
-    }, 3400);
+    }, 3900);
   }
   document.addEventListener("click", function (event) {
     const downloadLink = event.target.closest && event.target.closest("a.modal-download");
