@@ -212,7 +212,7 @@ nav.querySelectorAll("a").forEach(function (link) {
   const profileAvatar = document.querySelector("#profileButtonAvatar");
   const profileLabel = document.querySelector("#profileButtonLabel");
   const storageKey = "phenikspack-player-profile";
-  const defaultProfile = {name:"Игрок Minecraft", avatar:"PH", recent:[], downloads:[]};
+  const defaultProfile = {name:"Игрок Minecraft", avatar:"PH", recent:[], downloads:[], viewCount:0, downloadCount:0};
   let profile = defaultProfile;
   try {
     const saved = JSON.parse(localStorage.getItem(storageKey) || "null");
@@ -221,7 +221,9 @@ nav.querySelectorAll("a").forEach(function (link) {
         name: typeof saved.name === "string" && saved.name.trim() ? saved.name.trim().slice(0,24) : defaultProfile.name,
         avatar: typeof saved.avatar === "string" && saved.avatar ? saved.avatar : defaultProfile.avatar,
         recent: Array.isArray(saved.recent) ? saved.recent.slice(0,8) : [],
-        downloads: Array.isArray(saved.downloads) ? saved.downloads.slice(0,8) : []
+        downloads: Array.isArray(saved.downloads) ? saved.downloads.slice(0,8) : [],
+        viewCount: Number.isFinite(saved.viewCount) ? saved.viewCount : 0,
+        downloadCount: Number.isFinite(saved.downloadCount) ? saved.downloadCount : 0
       };
     }
   } catch (_) {}
@@ -279,13 +281,15 @@ nav.querySelectorAll("a").forEach(function (link) {
     if (avatarSelect) avatarSelect.value = profile.avatar;
     profileModal.querySelector("#profileStats").innerHTML =
       '<div><b>' + favorites.size + '</b><span>В избранном</span></div>' +
-      '<div><b>' + profile.recent.length + '</b><span>Просмотрено</span></div>' +
-      '<div><b>' + profile.downloads.length + '</b><span>Скачиваний</span></div>';
+      '<div><b>' + profile.viewCount + '</b><span>Просмотров паков</span></div>' +
+      '<div><b>' + profile.downloadCount + '</b><span>Скачиваний</span></div>';
     profileModal.querySelector("#profileRecent").innerHTML = activityMarkup(profile.recent,"Здесь появятся паки, которые ты откроешь.");
     profileModal.querySelector("#profileDownloads").innerHTML = activityMarkup(profile.downloads,"Скачанные паки появятся здесь.");
   }
   function record(listName, pack) {
     if (!pack) return;
+    if (listName === "recent") profile.viewCount++;
+    if (listName === "downloads") profile.downloadCount++;
     const list = profile[listName];
     const entry = {id:pack.project_id,title:pack.title || "Ресурспак",icon:pack.icon_url || "",date:new Date().toISOString()};
     const next = [entry].concat(list.filter(function(item){return item.id !== entry.id;})).slice(0,8);
@@ -366,9 +370,11 @@ function renderVersionFiles(version) {
   target.innerHTML = '<a class="button button-primary modal-download" href="' + escapeHTML(file.url) + '" download="' + escapeHTML(file.filename) + '">Скачать ZIP <span>↓</span></a>' +
     '<span class="modal-file-meta">' + escapeHTML(file.filename) + ' · ' + formatBytes(file.size) + '</span>';
 }
+let activeProfilePack = null;
 async function openPackDetails(projectId) {
   const pack = packs.find(function (item) { return item.project_id === projectId; });
   if (!pack) return;
+  activeProfilePack = pack;
   if (window.pheniksProfileRecordView) window.pheniksProfileRecordView("recent", pack);
   detailModal.hidden = false;
   document.body.classList.add("modal-open");
@@ -928,9 +934,7 @@ if(aiForm)aiForm.addEventListener("submit",function(event){event.preventDefault(
     const downloadLink = event.target.closest && event.target.closest("a.modal-download");
     if (!downloadLink) return;
     if (window.pheniksProfileRecordDownload) {
-      const title = detailModal.querySelector("#packModalTitle");
-      const pack = packs.find(function(item){return item.title === (title && title.textContent);});
-      if (pack) window.pheniksProfileRecordDownload("downloads", pack);
+      if (activeProfilePack) window.pheniksProfileRecordDownload("downloads", activeProfilePack);
     }
     playSwordDissolve();
   });
