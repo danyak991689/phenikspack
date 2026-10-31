@@ -426,4 +426,137 @@ if (aiForm) aiForm.addEventListener("submit",function (event) {
   if (aiNote) aiNote.innerHTML = 'Нейросеть распознала: <strong>'+escapeHTML(labelsText)+'</strong>'+escapeHTML(versionText)+'. Подходящих результатов: <strong>'+count+'</strong>.';
 });
 
+
+/* PHENIKS companion cat */
+(function initPheniksCat() {
+  const cat = document.createElement("button");
+  cat.type = "button";
+  cat.className = "pheniks-cat walking";
+  cat.setAttribute("aria-label","Котик PHENIKS AI");
+  cat.innerHTML = '<span class="cat-bubble" aria-live="polite">Мяу! Я слежу за ресурс-паками.</span>' +
+    '<span class="cat-body">' +
+      '<svg class="cat-art" viewBox="0 0 112 76" role="img" aria-label="Чёрный котик">' +
+        '<path class="cat-tail" d="M20 48 C2 42 4 20 18 17 C28 15 29 27 22 30" fill="none" stroke="#24232b" stroke-width="8" stroke-linecap="round"/>' +
+        '<path d="M25 42 Q29 22 52 25 Q76 22 84 43 Q89 59 68 62 L37 61 Q20 58 25 42Z" fill="#292831"/>' +
+        '<path d="M30 32 L28 9 Q27 4 33 9 L45 23 M66 23 L79 8 Q84 4 83 12 L80 35" fill="#292831" stroke="#17161d" stroke-width="2" stroke-linejoin="round"/>' +
+        '<path d="M34 16 L36 25 L42 23Z M72 24 L79 15 L77 28Z" fill="#d88991"/>' +
+        '<ellipse cx="57" cy="39" rx="25" ry="20" fill="#34323d"/>' +
+        '<ellipse cx="47" cy="39" rx="3" ry="4" fill="#ffb66d"/><ellipse cx="67" cy="39" rx="3" ry="4" fill="#ffb66d"/>' +
+        '<path d="M54 47 Q57 50 60 47" fill="none" stroke="#d88991" stroke-width="2" stroke-linecap="round"/>' +
+        '<path d="M40 46 L20 43 M40 50 L20 53 M73 46 L94 43 M73 50 L94 53" stroke="#aaa3b0" stroke-width="1.5" stroke-linecap="round"/>' +
+        '<path class="cat-leg leg-a" d="M34 55 Q30 64 25 65 M47 57 Q46 66 42 67 M68 57 Q69 65 74 66 M79 54 Q85 61 89 61" fill="none" stroke="#292831" stroke-width="7" stroke-linecap="round"/>' +
+        '<path d="M22 65 L29 65 M39 67 L46 67 M72 66 L78 66 M86 61 L92 61" stroke="#aaa3b0" stroke-width="2" stroke-linecap="round"/>' +
+      '</svg>' +
+    '</span><span class="cat-name">PHENIKS AI</span>';
+  document.body.appendChild(cat);
+
+  const messages = [
+    "Мяу! Ищу самые красивые текстуры.",
+    "Кажется, этот ресурспак мне нравится.",
+    "Не трогай, я охраняю каталог.",
+    "Проверяю, нет ли тут чего-нибудь розового...",
+    "Уф... столько ресурспаков. Нужен сон.",
+    "Мр-р-р. Хороший выбор!"
+  ];
+  let x = Math.max(12, Math.min(window.innerWidth - 100, 34));
+  let y = Math.max(110, window.innerHeight * 0.68);
+  let direction = 1;
+  let sleepingOn = null;
+  let timer = null;
+  let bubbleTimer = null;
+  let asleep = false;
+
+  function position() {
+    cat.style.left = x + "px";
+    cat.style.top = y + "px";
+    cat.classList.toggle("facing-left", direction < 0);
+  }
+  function say(message) {
+    const bubble = cat.querySelector(".cat-bubble");
+    bubble.textContent = message;
+    bubble.classList.add("visible");
+    clearTimeout(bubbleTimer);
+    bubbleTimer = setTimeout(function () { bubble.classList.remove("visible"); }, 3200);
+  }
+  function schedule(fn, delay) {
+    clearTimeout(timer);
+    timer = setTimeout(fn, delay);
+  }
+  function walk() {
+    asleep = false;
+    sleepingOn = null;
+    cat.classList.remove("sleeping");
+    cat.classList.add("walking");
+    const maxX = Math.max(8, window.innerWidth - 105);
+    if (x > maxX - 15) direction = -1;
+    else if (x < 15) direction = 1;
+    else if (Math.random() < 0.32) direction *= -1;
+    x = Math.max(8, Math.min(maxX, x + direction * (100 + Math.random() * 180)));
+    y = Math.max(105, Math.min(window.innerHeight - 105, window.innerHeight * (0.58 + Math.random() * 0.17)));
+    position();
+    if (Math.random() < 0.2) say(messages[Math.floor(Math.random() * messages.length)]);
+    schedule(function () {
+      if (Math.random() < 0.34) napOnPack();
+      else walk();
+    }, 2600 + Math.random() * 3200);
+  }
+  function napOnPack() {
+    const cards = Array.from(document.querySelectorAll(".pack-card")).filter(function (card) {
+      const rect = card.getBoundingClientRect();
+      return rect.width > 0 && rect.height > 0 && rect.bottom > 80 && rect.top < window.innerHeight - 35;
+    });
+    if (!cards.length) { walk(); return; }
+    sleepingOn = cards[Math.floor(Math.random() * cards.length)];
+    const rect = sleepingOn.getBoundingClientRect();
+    x = Math.max(6, Math.min(window.innerWidth - 100, rect.left + rect.width * (0.55 + Math.random() * 0.2) - 42));
+    y = Math.max(82, rect.top - 45);
+    asleep = true;
+    cat.classList.remove("walking");
+    cat.classList.add("sleeping");
+    position();
+    say("Мр-р-р... этот пак такой уютный...");
+    schedule(function () {
+      asleep = false;
+      sleepingOn = null;
+      cat.classList.remove("sleeping");
+      cat.classList.add("waking");
+      say("Потягушки! Пора дальше.");
+      schedule(walk, 1300);
+    }, 6500 + Math.random() * 6500);
+  }
+  cat.addEventListener("click", function () {
+    if (asleep) {
+      clearTimeout(timer);
+      asleep = false;
+      sleepingOn = null;
+      cat.classList.remove("sleeping");
+      cat.classList.add("waking");
+      say("Ой! Разбудили. Мяу!");
+      schedule(walk, 1100);
+    } else {
+      say(messages[Math.floor(Math.random() * messages.length)]);
+    }
+  });
+  window.addEventListener("resize", function () {
+    x = Math.min(x, window.innerWidth - 100);
+    if (asleep && sleepingOn && sleepingOn.isConnected) {
+      const rect = sleepingOn.getBoundingClientRect();
+      x = Math.max(6, Math.min(window.innerWidth - 100, rect.left + rect.width * 0.65 - 42));
+      y = Math.max(82, rect.top - 45);
+    }
+    position();
+  });
+  window.addEventListener("scroll", function () {
+    if (asleep && sleepingOn && sleepingOn.isConnected) {
+      const rect = sleepingOn.getBoundingClientRect();
+      x = Math.max(6, Math.min(window.innerWidth - 100, rect.left + rect.width * 0.65 - 42));
+      y = Math.max(82, rect.top - 45);
+      position();
+    }
+  }, {passive:true});
+  position();
+  say("Привет! Я котик PHENIKS AI.");
+  schedule(walk, 2600);
+})();
+
 loadCatalog();
