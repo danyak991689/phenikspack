@@ -369,3 +369,22 @@ body.profile-open{overflow:hidden}
 .pack-visual-mystery{--pack-accent:#ff9a55;background:radial-gradient(circle at 50% 48%,#60456b 0,#2d2639 48%,#15151c 100%)}
 @media(prefers-reduced-motion:reduce){.pack-atmosphere-orbit,.pack-atmosphere-glow,.pack-atmosphere-symbol,.pack-atmosphere-particle{animation:none!important}}
 @media(max-width:560px){.pack-vibe-label{bottom:10px;font-size:6px;letter-spacing:1.2px}.pack-atmosphere-symbol{font-size:48px}}
+
+
+/* Performance mode: keep pack identity, reduce continuous GPU work */
+.pack-card{content-visibility:auto;contain-intrinsic-size:320px 440px;contain:layout paint style}
+.pack-atmosphere-glow,.pack-atmosphere-orbit,.pack-atmosphere-symbol,.pack-atmosphere-particle{animation:none!important;filter:none!important}
+.pack-atmosphere-glow{opacity:.68}
+.pack-atmosphere-orbit{transform:none;box-shadow:none}
+.pack-atmosphere-symbol{opacity:.2;text-shadow:none}
+.pack-atmosphere-particle{opacity:.48;box-shadow:0 0 5px 1px var(--pack-accent)}
+.pack-card:hover .pack-atmosphere-glow{opacity:.95}
+.pack-card:hover .pack-atmosphere-symbol{opacity:.42}
+.pack-card:hover .pack-atmosphere-particle{opacity:.9}
+.pack-source-icon{filter:none!important}
+.pack-card:hover .pack-source-icon{filter:drop-shadow(0 0 7px color-mix(in srgb,var(--pack-accent) 30%,transparent))!important}
+.catalog-more-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;margin:30px auto 0}
+.catalog-more-button{min-width:220px;justify-content:center;cursor:pointer}
+.catalog-more-button[hidden]{display:none}
+.catalog-more-count{color:#77737e;font-size:9px;letter-spacing:.7px}
+@media(prefers-reduced-motion:reduce){.pack-card,.pack-card *{scroll-behavior:auto!important;transition:none!important}}
