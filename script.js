@@ -40,18 +40,19 @@ function render() {
   const sourcePacks = aiAnalysis
     ? Array.from(new Map(packs.concat(aiExtraPacks).map(function (pack) { return [pack.project_id, pack]; })).values())
     : packs;
+  const requestedVersionExists = !aiAnalysis || !aiAnalysis.version || sourcePacks.some(function(pack){return (pack.versions||[]).includes(aiAnalysis.version);});
   let visible = sourcePacks.filter(function (pack) {
     const category = packCategory(pack);
     const text = [pack.title, pack.description, pack.author, category.label, (pack.versions || []).join(" ")].join(" ").toLowerCase();
     return (activeFilter === "all" || category.key === activeFilter) &&
-      (!aiAnalysis || !aiAnalysis.version || (pack.versions || []).includes(aiAnalysis.version)) &&
+      (!aiAnalysis || !aiAnalysis.version || !requestedVersionExists || (pack.versions || []).includes(aiAnalysis.version)) &&
       text.includes(query) && (!showFavorites || favorites.has(pack.project_id));
   });
   if (aiAnalysis && !query && !showFavorites) {
     const rankedPacks = visible.map(function (pack) {
       return {pack:pack, score:scorePackForAI(pack, aiAnalysis)};
     }).sort(function (a,b) { return b.score - a.score; });
-    const matchedPacks = rankedPacks.filter(function (item) { return item.score > 0.015; });
+    const matchedPacks = rankedPacks.filter(function (item) { return item.score > 0.15; });
     visible = (matchedPacks.length ? matchedPacks : rankedPacks.slice(0, 24)).map(function (item) { return item.pack; });
     aiAnalysis.noExactMatches = matchedPacks.length === 0;
   }
@@ -486,12 +487,14 @@ async function runAISearch(){
     if(requestId!==aiSearchRequest)return;
     render();
     const count=grid.querySelectorAll(".pack-card").length;
+    aiAnalysis.versionNotFound=!!(aiAnalysis.version && !aiExtraPacks.concat(packs).some(function(p){return (p.versions||[]).includes(aiAnalysis.version);}));
     const parts=[];
     if(found.length)parts.push("Понял: "+found.join(", "));
     if(aiAnalysis.version)parts.push("Minecraft "+aiAnalysis.version);
     if(aiAnalysis.resolution)parts.push(aiAnalysis.resolution);
     if(!parts.length)parts.push("общий поиск по описанию");
     const exact=aiAnalysis.labels.length>0||aiAnalysis.version||aiAnalysis.terms.length>0;
+    if(aiAnalysis.versionNotFound)parts.push("точного совпадения версии нет — показаны близкие варианты");
     updateAIStatus(parts.join(" · ")+". Подобрал "+count+" вариантов. "+(aiAnalysis.labels.length?"Результаты отсортированы по совпадению с запросом.":"Показаны результаты поиска Modrinth."));
   }catch(error){
     console.error(error);
