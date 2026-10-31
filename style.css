@@ -67,3 +67,19 @@ body.modal-open{overflow:hidden}
 .modal-loading{text-align:center;padding:65px 20px;color:#c8c1ca;font-size:12px;line-height:1.8}
 .modal-loading .text-button{display:block;margin:15px auto 0}
 @media(max-width:600px){.pack-modal{padding:10px}.pack-modal-panel{max-height:94vh}.pack-modal-content{padding:25px 18px}.modal-gallery{grid-template-columns:repeat(2,minmax(0,1fr))}.modal-gallery img{height:100px}.modal-icon{width:58px;height:58px}.modal-title-row{gap:12px}}
+
+
+/* PHENIKS AI local neural search */
+.ai-search-panel{margin:18px 0 20px;padding:19px 20px;background:linear-gradient(120deg,rgba(255,113,56,.09),rgba(28,26,32,.9));border:1px solid #49342d;border-radius:5px}
+.ai-search-heading{display:flex;align-items:center;gap:11px;margin-bottom:14px}
+.ai-spark{width:30px;height:30px;display:grid;place-items:center;background:rgba(255,113,56,.14);border:1px solid rgba(255,113,56,.3);border-radius:50%;color:var(--orange);font-size:17px}
+.ai-search-heading b{display:block;font-size:11px;letter-spacing:1.5px;color:#fff}
+.ai-search-heading small{display:block;margin-top:3px;color:#99939d;font-size:9px}
+.ai-local-badge{margin-left:auto;color:#b4a29a;border:1px solid #514039;border-radius:3px;padding:5px 7px;font-size:8px;letter-spacing:1px}
+.ai-search-form{display:flex;gap:10px}
+.ai-search-form input{flex:1;min-width:0;background:#101014;border:1px solid #39333b;border-radius:3px;padding:13px 14px;color:#fff;outline:none;font:inherit;font-size:11px}
+.ai-search-form input:focus{border-color:var(--orange)}
+.ai-search-form .button{border:0;cursor:pointer;white-space:nowrap}
+.ai-result-note{margin:11px 0 0;color:#aaa3ad;font-size:10px;line-height:1.6}
+.ai-result-note strong{color:#ff9a68}
+@media(max-width:600px){.ai-search-panel{padding:15px}.ai-search-form{flex-direction:column}.ai-search-form .button{justify-content:center}.ai-local-badge{font-size:7px}}
