@@ -37,18 +37,22 @@ function formatDownloads(value) {
 }
 function render() {
   const query = search.value.trim().toLowerCase();
-  let visible = packs.filter(function (pack) {
+  const sourcePacks = aiAnalysis
+    ? Array.from(new Map(packs.concat(aiExtraPacks).map(function (pack) { return [pack.project_id, pack]; })).values())
+    : packs;
+  let visible = sourcePacks.filter(function (pack) {
     const category = packCategory(pack);
     const text = [pack.title, pack.description, pack.author, category.label, (pack.versions || []).join(" ")].join(" ").toLowerCase();
     return (activeFilter === "all" || category.key === activeFilter) &&
       text.includes(query) && (!showFavorites || favorites.has(pack.project_id));
   });
   if (aiAnalysis && !query && !showFavorites) {
-    visible = visible.map(function (pack) {
+    const rankedPacks = visible.map(function (pack) {
       return {pack:pack, score:scorePackForAI(pack, aiAnalysis)};
-    }).filter(function (item) { return item.score > 0.015; })
-      .sort(function (a,b) { return b.score - a.score; })
-      .map(function (item) { return item.pack; });
+    }).sort(function (a,b) { return b.score - a.score; });
+    const matchedPacks = rankedPacks.filter(function (item) { return item.score > 0.015; });
+    visible = (matchedPacks.length ? matchedPacks : rankedPacks.slice(0, 24)).map(function (item) { return item.pack; });
+    aiAnalysis.noExactMatches = matchedPacks.length === 0;
   }
   grid.innerHTML = visible.map(function (pack) {
     const category = packCategory(pack);
@@ -143,15 +147,18 @@ function updateSearchClear() {
   if (searchClear) searchClear.hidden = !search.value;
 }
 search.addEventListener("input", function () {
+  resetAIState();
   updateSearchClear();
   render();
 });
 search.addEventListener("search", function () {
+  resetAIState();
   updateSearchClear();
   render();
 });
 if (searchClear) searchClear.addEventListener("click", function () {
   search.value = "";
+  resetAIState();
   activeFilter = "all";
   showFavorites = false;
   filters.querySelectorAll(".filter-chip").forEach(function (chip) {
@@ -166,6 +173,7 @@ favoritesToggle.addEventListener("click", function () {
   render();
 });
 document.querySelector("#resetFilters").addEventListener("click", function () {
+  resetAIState();
   activeFilter = "all";
   showFavorites = false;
   search.value = "";
@@ -324,9 +332,14 @@ const aiTrainingExamples = [
   ["pvp pack", ["pvp"]], ["пак для сражений", ["pvp"]],
   ["ресурспак для выживания", ["vanilla"]], ["реализм для майнкрафта", ["realism"]],
   ["тёмный pvp для 1.21", ["pvp","dark"]], ["розовый пак для майнкрафта", ["pink"]],
-  ["вода и небо", ["water","sky"]], ["пак не тормозит игру", ["performance"]]
+  ["вода и небо", ["water","sky"]], ["пак не тормозит игру", ["performance"]],
+  ["зелёный ресурспак", ["green"]], ["green texture pack", ["green"]],
+  ["красные текстуры", ["red"]], ["red resource pack", ["red"]],
+  ["белый светлый пак", ["white"]], ["white texture pack", ["white"]],
+  ["оранжевые текстуры", ["orange"]], ["orange resource pack", ["orange"]],
+  ["жёлтый пак", ["yellow"]], ["yellow resource pack", ["yellow"]]
 ];
-const aiLabels = ["pvp","realism","vanilla","atmosphere","pink","blue","purple","dark","faithful","performance","sky","water"];
+const aiLabels = ["pvp","realism","vanilla","atmosphere","pink","blue","purple","dark","faithful","performance","sky","water","green","red","white","orange","yellow"];
 const aiTokenize = function (value) {
   return String(value || "").toLowerCase().replace(/ё/g,"е").match(/[a-zа-я0-9.]+/g) || [];
 };
@@ -390,40 +403,136 @@ function trainLocalNetwork() {
 trainLocalNetwork();
 
 const aiMatchTerms = {
-  pvp:["pvp","combat","battle","duel","sword","weapon","16x","8x","low fire","short sword","меч","дуэль","сраж","пвп"],
-  realism:["realistic","realism","photoreal","real","реалист","реализм"],
-  vanilla:["vanilla","default","faithful","обычн","ванил","стандарт"],
-  atmosphere:["atmosphere","fantasy","medieval","environment","атмосфер","фэнтези","сказоч"],
-  pink:["pink","rose","розов","розовый","розовая"],
-  blue:["blue","cyan","aqua","голуб","син","бирюз"],
-  purple:["purple","violet","фиолет"],
-  dark:["dark","black","night","дрем","мрач","тём","темн","чёрн","черн"],
+  pvp:["pvp","combat","battle","duel","sword","weapon","16x","8x","low fire","short sword","меч","дуэль","сраж","пвп","бой","арена"],
+  realism:["realistic","realism","photoreal","real","реалист","реализм","фотореал"],
+  vanilla:["vanilla","default","faithful","обычн","ванил","стандарт","классич"],
+  atmosphere:["atmosphere","fantasy","medieval","environment","атмосфер","фэнтези","сказоч","средневек"],
+  pink:["pink","rose","розов","пинк","малинов","фукси"],
+  blue:["blue","cyan","aqua","turquoise","teal","light blue","sky blue","голуб","син","бирюз","лазур","небес","сапфир","аквамар"],
+  purple:["purple","violet","фиолет","лилов","сирен"],
+  dark:["dark","black","night","мрач","тём","темн","чёрн","черн","ночн"],
   faithful:["faithful","vanilla","default","стандарт","ванил"],
-  performance:["performance","fps","low","16x","8x","легк","оптимиз","слаб"],
-  sky:["sky","cloud","sunset","stars","небо","облак","звезд","закат"],
-  water:["water","clear water","океан","вода","воды","водн"]
+  performance:["performance","fps","low","16x","8x","легк","оптимиз","слаб","производительн"],
+  sky:["sky","cloud","sunset","stars","небо","облак","звезд","закат","рассвет"],
+  water:["water","clear water","ocean","океан","вода","воды","водн","море"],
+  green:["green","lime","emerald","зелён","зелен","изумруд","лайм"],
+  red:["red","crimson","scarlet","красн","ал"],
+  white:["white","light","snow","бел","светл","снеж"],
+  orange:["orange","amber","оранж","янтар"],
+  yellow:["yellow","gold","золот","жёлт","желт"]
 };
+const aiLabelNames = {pvp:"PvP",realism:"реализм",vanilla:"Vanilla",atmosphere:"атмосфера",pink:"розовый",blue:"голубой / синий",purple:"фиолетовый",dark:"тёмный",faithful:"ванильный стиль",performance:"производительность",sky:"небо",water:"вода",green:"зелёный",red:"красный",white:"белый",orange:"оранжевый",yellow:"жёлтый"};
+const aiSearchTerms = {pvp:"pvp",realism:"realistic",vanilla:"vanilla",atmosphere:"fantasy",pink:"pink",blue:"blue",purple:"purple",dark:"dark",faithful:"faithful",performance:"low resolution",sky:"sky",water:"water",green:"green",red:"red",white:"white",orange:"orange",yellow:"yellow"};
+let aiExtraPacks = [];
+
+function normalizeAIText(value) {
+  return String(value || "").toLowerCase().replace(/ё/g,"е").replace(/[^a-zа-я0-9.]+/g," ");
+}
+function queryHasTerm(query, term) {
+  return normalizeAIText(query).includes(normalizeAIText(term));
+}
 function scorePackForAI(pack, analysis) {
   const category = packCategory(pack);
-  const haystack = [pack.title,pack.description,pack.author,category.label,(pack.categories||[]).join(" "),(pack.display_categories||[]).join(" ")].join(" ").toLowerCase().replace(/ё/g,"е");
+  const haystack = normalizeAIText([
+    pack.title,pack.description,pack.author,category.label,
+    (pack.categories||[]).join(" "),(pack.display_categories||[]).join(" ")
+  ].join(" "));
   let score = 0;
   analysis.labels.forEach(function (item) {
     const terms = aiMatchTerms[item.label] || [];
-    const match = terms.some(function (term) { return haystack.includes(term); });
+    const match = terms.some(function (term) { return haystack.includes(normalizeAIText(term)); });
     if (match) score += item.score * (item.label === "pvp" && category.key === "pvp" ? 1.8 : 1);
     if (item.label === "pvp" && category.key === "pvp" && !match) score += item.score * 1.5;
   });
   if (analysis.version && (pack.versions || []).includes(analysis.version)) score += 0.8;
+  if (aiExtraPacks.some(function (item) { return item.project_id === pack.project_id; })) score += 0.025;
   return score;
 }
 function analyzeUserQuery(query) {
-  const output = aiForward(aiVectorize(query)).output;
-  const ranked = output.map(function (score,index) { return {label:aiLabels[index],score:score}; })
-    .sort(function (a,b) { return b.score-a.score; });
-  let labels = ranked.filter(function (item) { return item.score >= 0.28; }).slice(0,5);
-  if (!labels.length && ranked[0] && ranked[0].score >= 0.18) labels = ranked.slice(0,1);
+  const normalized = normalizeAIText(query);
+  const detected = [];
+  aiLabels.forEach(function (label) {
+    const terms = aiMatchTerms[label] || [];
+    if (terms.some(function (term) { return queryHasTerm(normalized, term); })) {
+      detected.push({label:label,score:0.96});
+    }
+  });
+  const knownTokens = aiTokenize(query).some(function (word) { return aiWordIndex.has(word); });
+  if (knownTokens) {
+    const output = aiForward(aiVectorize(query)).output;
+    output.map(function (score,index) { return {label:aiLabels[index],score:score}; })
+      .sort(function (a,b) { return b.score-a.score; })
+      .filter(function (item) {
+        return item.score >= 0.72 && !detected.some(function (found) { return found.label === item.label; });
+      })
+      .slice(0,3).forEach(function (item) { detected.push(item); });
+  }
   const versionMatch = query.match(/\b1\.\d{1,2}(?:\.\d{1,2})?\b/);
-  return {labels:labels,version:versionMatch ? versionMatch[0] : null};
+  return {labels:detected.slice(0,6),version:versionMatch ? versionMatch[0] : null,noExactMatches:false};
+}
+function resetAIState() {
+  aiAnalysis = null;
+  aiExtraPacks = [];
+  if (aiInput) aiInput.value = "";
+  if (aiNote) aiNote.textContent = "Опиши, какой ресурспак хочешь найти. Нейросеть разберёт стиль, цвет и особенности.";
+}
+async function fetchAIPacks(analysis) {
+  const terms = analysis.labels.map(function (item) { return aiSearchTerms[item.label]; }).filter(Boolean);
+  if (!terms.length) return [];
+  const uniqueTerms = Array.from(new Set(terms)).slice(0,3);
+  const responses = await Promise.all(uniqueTerms.map(async function (term) {
+    const params = new URLSearchParams({
+      query:term,
+      facets:JSON.stringify([["project_type:resourcepack"]]),
+      index:"relevance",
+      limit:"100"
+    });
+    const response = await fetch(API + "?" + params.toString(), {headers:{"Accept":"application/json"}});
+    if (!response.ok) throw new Error("Modrinth AI search returned " + response.status);
+    return response.json();
+  }));
+  const seen = new Set();
+  return responses.flatMap(function (page) { return page.hits || []; }).filter(function (pack) {
+    if (!pack.project_id || seen.has(pack.project_id)) return false;
+    seen.add(pack.project_id);
+    return true;
+  });
+}
+async function runAISearch() {
+  const query = aiInput.value.trim();
+  if (!query) {
+    if (aiNote) aiNote.textContent = "Напиши, какой ресурспак ты ищешь.";
+    return;
+  }
+  aiAnalysis = analyzeUserQuery(query);
+  aiExtraPacks = [];
+  activeFilter = aiAnalysis.labels.some(function (item) { return item.label === "pvp"; }) ? "pvp" : "all";
+  showFavorites = false;
+  search.value = "";
+  updateSearchClear();
+  filters.querySelectorAll(".filter-chip").forEach(function (chip) {
+    chip.classList.toggle("active",chip.dataset.filter === activeFilter);
+  });
+  render();
+  const names = aiAnalysis.labels.map(function (item) { return aiLabelNames[item.label]; });
+  if (!aiAnalysis.labels.length) {
+    if (aiNote) aiNote.textContent = "Пока не распознал стиль. Попробуй указать цвет, PvP, реализм, воду или небо.";
+    return;
+  }
+  if (aiNote) aiNote.textContent = "Ищу подходящие ресурс-паки на Modrinth…";
+  try {
+    aiExtraPacks = await fetchAIPacks(aiAnalysis);
+    render();
+    const count = grid.querySelectorAll(".pack-card").length;
+    const versionText = aiAnalysis.version ? " · Minecraft " + aiAnalysis.version : "";
+    const labelsText = names.join(", ");
+    const noMatchText = aiAnalysis.noExactMatches ? " Точных совпадений по описаниям нет — показываю ближайшие варианты." : "";
+    if (aiNote) aiNote.innerHTML = 'Распознано: <strong>'+escapeHTML(labelsText)+'</strong>'+escapeHTML(versionText)+'. Найдено вариантов: <strong>'+count+'</strong>.'+escapeHTML(noMatchText);
+  } catch (error) {
+    console.error(error);
+    const count = grid.querySelectorAll(".pack-card").length;
+    if (aiNote) aiNote.textContent = "Распознано: " + names.join(", ") + ". Показаны совпадения из каталога (" + count + ").";
+  }
 }
 if (aiForm) aiForm.addEventListener("submit",function (event) {
   event.preventDefault();
