@@ -198,7 +198,7 @@ function renderVersionFiles(version) {
     target.innerHTML = '<p class="modal-muted">Для этой версии пока нет доступного файла.</p>';
     return;
   }
-  target.innerHTML = '<a class="button button-primary modal-download" href="' + escapeHTML(file.url) + '" download="' + escapeHTML(file.filename) + '" target="_blank" rel="noopener noreferrer">Скачать ZIP <span>↓</span></a>' +
+  target.innerHTML = '<a class="button button-primary modal-download" href="' + escapeHTML(file.url) + '" download="' + escapeHTML(file.filename) + '">Скачать ZIP <span>↓</span></a>' +
     '<span class="modal-file-meta">' + escapeHTML(file.filename) + ' · ' + formatBytes(file.size) + '</span>';
 }
 async function openPackDetails(projectId) {
