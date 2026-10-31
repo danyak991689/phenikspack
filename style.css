@@ -129,3 +129,18 @@ body.modal-open{overflow:hidden}
 @keyframes catLegForward{0%,100%{transform:rotate(13deg) translateY(0)}50%{transform:rotate(-17deg) translateY(-2px)}}
 @keyframes catLegBackward{0%,100%{transform:rotate(-17deg) translateY(-2px)}50%{transform:rotate(13deg) translateY(0)}}
 @media(max-width:600px){.pheniks-cat{width:112px;height:82px;transform:scale(.82);transform-origin:bottom left}.pheniks-cat.facing-left{transform:scale(.82)}}
+
+/* Cute chibi-style PHENIKS companion */
+.pheniks-cat{width:128px;height:91px;filter:drop-shadow(0 7px 8px rgba(0,0,0,.28))}
+.cat-body{inset:0;transform-origin:58% 78%}
+.cat-art{overflow:visible}
+.pheniks-cat.walking .cat-art{animation:catBodyWalk .48s ease-in-out infinite}
+.pheniks-cat.walking .cat-leg{transform-box:fill-box;transform-origin:50% 12%;animation-duration:.48s;animation-iteration-count:infinite;animation-timing-function:ease-in-out}
+.pheniks-cat.walking .leg-front-a,.pheniks-cat.walking .leg-back-b{animation-name:catLegForward}
+.pheniks-cat.walking .leg-front-b,.pheniks-cat.walking .leg-back-a{animation-name:catLegBackward;animation-delay:-.24s}
+.pheniks-cat.sleeping .cat-art{animation:catSleep 2.2s ease-in-out infinite}
+.pheniks-cat.sleeping .cat-leg{animation:none!important}
+@keyframes catBodyWalk{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-2px) rotate(-.8deg)}}
+@keyframes catLegForward{0%,100%{transform:rotate(13deg) translateY(0)}50%{transform:rotate(-17deg) translateY(-2px)}}
+@keyframes catLegBackward{0%,100%{transform:rotate(-17deg) translateY(-2px)}50%{transform:rotate(13deg) translateY(0)}}
+@media(max-width:600px){.pheniks-cat{width:112px;height:82px}}
