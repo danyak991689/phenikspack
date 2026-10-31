@@ -253,25 +253,20 @@ body{background-image:radial-gradient(ellipse at 4% 16%,rgba(111,76,138,.09),tra
 
 
 /* Large pixel-art Minecraft Totem of Undying download animation */
-.totem-break-overlay{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;pointer-events:none;overflow:hidden;background:rgba(3,5,8,.24);animation:totem-overlay-fade 2.9s linear forwards}
-.totem-break-scene{position:relative;width:min(420px,92vw);height:min(570px,92vh);display:grid;place-items:center;image-rendering:pixelated}
-.totem-sprite{position:absolute;top:50%;left:50%;width:min(220px,54vw);height:min(330px,76vh);transform:translate(-50%,110vh) scale(.92);filter:drop-shadow(0 0 22px rgba(191,225,129,.42));animation:totem-rise .72s cubic-bezier(.18,.78,.22,1) forwards,totem-hover .38s steps(3,end) .73s 2 alternate}
-.totem-half{position:absolute;inset:0;overflow:hidden}
-.totem-art{display:block;width:100%;height:100%;image-rendering:pixelated;filter:drop-shadow(0 0 4px rgba(225,204,119,.24))}
-.totem-half-left{clip-path:inset(0 50% 0 0);animation:totem-left-fall 1.35s cubic-bezier(.55,.02,.9,.45) 1.22s forwards}
-.totem-half-right{clip-path:inset(0 0 0 50%);animation:totem-right-fall 1.35s cubic-bezier(.55,.02,.9,.45) 1.22s forwards}
-.totem-beam{position:absolute;z-index:4;top:8%;left:50%;width:7px;height:0;transform:translateX(-50%);background:#fff;box-shadow:0 0 10px 5px #fff,0 0 34px 16px rgba(255,255,255,.78);animation:totem-beam-cut .36s steps(8,end) .88s forwards}
-.totem-flash{position:absolute;z-index:5;top:50%;left:50%;width:min(330px,80vw);height:5px;transform:translate(-50%,-50%);background:#fff;box-shadow:0 0 20px 11px rgba(255,255,255,.98);opacity:0;animation:totem-cut-flash .34s steps(3,end) 1.18s forwards}
-.totem-ground-glow{position:absolute;bottom:6%;left:50%;width:180px;height:14px;transform:translateX(-50%);background:#dfffc1;filter:blur(19px);opacity:0;animation:totem-ground .9s steps(5,end) 1.35s forwards}
-.totem-pixel-burst{position:absolute;top:48%;left:50%;width:6px;height:6px;background:#fff;box-shadow:-76px -40px #e6f8d0,76px -40px #e6f8d0,-90px 12px #fff,90px 12px #fff,-54px 72px #b7e88d,54px 72px #b7e88d,-28px -88px #fff,28px -88px #fff;opacity:0;animation:totem-pixels .9s steps(6,end) 1.15s forwards}
-@keyframes totem-rise{0%{transform:translate(-50%,110vh) scale(.92)}78%{transform:translate(-50%,-5%) scale(1.04)}100%{transform:translate(-50%,0) scale(1)}}
-@keyframes totem-hover{from{margin-top:0}to{margin-top:-9px}}
-@keyframes totem-beam-cut{0%{height:0}100%{height:84%}}
-@keyframes totem-cut-flash{0%{opacity:0;transform:translate(-50%,-50%) scaleX(.1)}35%{opacity:1;transform:translate(-50%,-50%) scaleX(1)}100%{opacity:0;transform:translate(-50%,-50%) scaleX(1.3)}}
-@keyframes totem-left-fall{0%{transform:translate(0,0) rotate(0);opacity:1}100%{transform:translate(-115px,110vh) rotate(-42deg);opacity:0}}
-@keyframes totem-right-fall{0%{transform:translate(0,0) rotate(0);opacity:1}100%{transform:translate(115px,112vh) rotate(45deg);opacity:0}}
-@keyframes totem-pixels{0%{opacity:0;transform:scale(.3)}28%{opacity:1;transform:scale(1)}100%{opacity:0;transform:translateY(110px) scale(.2)}}
-@keyframes totem-ground{0%{opacity:0;transform:translateX(-50%) scaleX(.2)}35%{opacity:.85;transform:translateX(-50%) scaleX(1)}100%{opacity:0;transform:translateX(-50%) scaleX(1.5)}}
-@keyframes totem-overlay-fade{0%,84%{opacity:1}100%{opacity:0}}
-@media(max-width:600px){.totem-sprite{width:min(180px,55vw);height:min(270px,72vh)}.totem-break-scene{height:90vh}}
-@media(prefers-reduced-motion:reduce){.totem-break-overlay{animation:none;opacity:1}.totem-sprite,.totem-beam,.totem-flash,.totem-ground-glow,.totem-pixel-burst,.totem-half-left,.totem-half-right{animation-duration:.01ms!important;animation-delay:0s!important;animation-fill-mode:forwards!important}}
+.sword-effect-overlay{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;pointer-events:none;overflow:hidden;background:radial-gradient(ellipse at 50% 45%,rgba(14,24,38,.42),rgba(3,5,10,.72));animation:sword-overlay-out 3.35s ease forwards}
+.sword-effect-scene{position:relative;width:100%;height:100%;display:grid;place-items:center;perspective:900px}
+.sword-sprite{position:absolute;top:50%;left:50%;width:min(250px,48vw);height:min(610px,88vh);transform:translate(-50%,-155vh) rotate(-13deg) scale(.82);filter:drop-shadow(0 0 24px rgba(168,220,255,.42));animation:sword-arrival .95s cubic-bezier(.16,.82,.22,1) forwards,sword-dissolve 1.25s ease-in 1.48s forwards;transform-origin:50% 50%;clip-path:inset(0 0 0 0)}
+.sword-art{width:100%;height:100%;display:block;overflow:visible;filter:drop-shadow(0 0 8px rgba(224,245,255,.38))}
+.sword-aura{position:absolute;width:min(470px,85vw);height:min(650px,90vh);border-radius:50%;background:radial-gradient(ellipse,rgba(164,220,255,.18),rgba(115,173,222,.06) 42%,transparent 72%);filter:blur(24px);opacity:0;animation:sword-aura-pulse 2.4s ease .35s forwards}
+.sword-light-beam{position:absolute;z-index:4;left:0;right:0;top:-35vh;height:24vh;background:linear-gradient(180deg,transparent,rgba(255,255,255,.22) 20%,#fff 48%,rgba(214,243,255,.78) 57%,transparent);box-shadow:0 0 35px 12px rgba(215,242,255,.42);opacity:0;animation:sword-beam-sweep 1.55s cubic-bezier(.35,.02,.6,1) 1.35s forwards}
+.sword-light-flash{position:absolute;z-index:5;left:50%;top:50%;width:min(520px,95vw);height:3px;transform:translate(-50%,-50%) scaleX(.05);background:#fff;box-shadow:0 0 20px 12px rgba(255,255,255,.9),0 0 70px 35px rgba(165,221,255,.4);opacity:0;animation:sword-flash 1.2s ease 1.42s forwards}
+.sword-particles{position:absolute;z-index:6;left:50%;top:50%;width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:-150px -190px #d8f1ff,120px -160px #fff,-95px -75px #a8dfff,145px -30px #fff,-125px 80px #d8f1ff,105px 120px #fff,-45px 190px #a8dfff,48px -220px #fff,185px 65px #d8f1ff,-180px 20px #fff;opacity:0;filter:drop-shadow(0 0 9px #bdeaff);animation:sword-particle-burst 1.55s ease 1.55s forwards}
+@keyframes sword-arrival{0%{transform:translate(-50%,-155vh) rotate(-13deg) scale(.82)}72%{transform:translate(-50%,-45%) rotate(5deg) scale(1.06)}100%{transform:translate(-50%,-50%) rotate(0deg) scale(1)}}
+@keyframes sword-dissolve{0%{clip-path:inset(0 0 0 0);opacity:1;filter:drop-shadow(0 0 24px rgba(168,220,255,.55))}35%{filter:drop-shadow(0 0 35px #fff) brightness(2)}100%{clip-path:inset(100% 0 0 0);opacity:0;filter:drop-shadow(0 0 60px #fff) brightness(3)}}
+@keyframes sword-beam-sweep{0%{top:-35vh;opacity:0}12%{opacity:1}85%{opacity:1}100%{top:115vh;opacity:0}}
+@keyframes sword-flash{0%{opacity:0;transform:translate(-50%,-50%) scaleX(.05)}24%{opacity:1;transform:translate(-50%,-50%) scaleX(1)}100%{opacity:0;transform:translate(-50%,-50%) scaleX(1.4)}}
+@keyframes sword-particle-burst{0%{opacity:0;transform:scale(.2)}25%{opacity:1;transform:scale(1.15)}100%{opacity:0;transform:translateY(95px) scale(.12)}}
+@keyframes sword-aura-pulse{0%{opacity:0;transform:scale(.55)}35%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.35)}}
+@keyframes sword-overlay-out{0%,84%{opacity:1}100%{opacity:0}}
+@media(max-width:600px){.sword-sprite{width:min(190px,52vw);height:min(500px,82vh)}.sword-light-beam{height:20vh}}
+@media(prefers-reduced-motion:reduce){.sword-effect-overlay{animation:none;opacity:1}.sword-sprite,.sword-light-beam,.sword-light-flash,.sword-particles,.sword-aura{animation-duration:.01ms!important;animation-delay:0s!important;animation-fill-mode:forwards!important}}
