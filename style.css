@@ -135,3 +135,53 @@ body.modal-open{overflow:hidden}
 .search-clear{border:0;background:transparent;color:#aaa8b0;font-size:21px;line-height:1;padding:4px 7px;cursor:pointer;border-radius:4px;transition:color .2s,background .2s}
 .search-clear:hover{color:var(--orange);background:rgba(255,113,56,.1)}
 .search-clear[hidden]{display:none}
+
+
+/* HALLOWEEN 2026 — atmospheric details and interactive decorations */
+.hero{isolation:isolate}
+.hero-glow{background:rgba(255,92,38,.11)}
+.spooky-scenery{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.spooky-moon{position:absolute;right:14%;top:10%;width:78px;height:78px;border-radius:50%;background:radial-gradient(circle at 36% 32%,#fff5cf,#e4b77a 58%,#9a644b 100%);box-shadow:0 0 28px rgba(255,199,132,.18),0 0 95px rgba(255,143,79,.12);opacity:.82}
+.spooky-moon:before,.spooky-moon:after{content:"";position:absolute;border-radius:50%;background:rgba(115,78,68,.12)}
+.spooky-moon:before{width:13px;height:13px;left:20px;top:22px}.spooky-moon:after{width:8px;height:8px;right:18px;bottom:19px}
+.spooky-moon i{position:absolute;width:58px;height:58px;border-radius:50%;background:#17151b;right:-15px;top:-8px}
+.spooky-web{position:absolute;color:rgba(255,255,255,.14);font-size:38px;line-height:.8;letter-spacing:8px}
+.web-left{left:0;top:0;transform:rotate(90deg);transform-origin:top left;opacity:.55}
+.spooky-bat{position:absolute;font-size:22px;filter:grayscale(1);opacity:.58;animation:batDrift 8s ease-in-out infinite}
+.bat-one{right:31%;top:20%;animation-delay:-2s}.bat-two{right:8%;top:55%;font-size:17px;animation-delay:-5s}.bat-three{left:48%;top:72%;font-size:15px;animation-delay:-3s}
+.spooky-ghost{position:absolute;font-size:34px;opacity:.16;filter:grayscale(.5);animation:ghostFloat 7s ease-in-out infinite}
+.ghost-one{right:5%;bottom:20%}.ghost-two{left:46%;top:15%;font-size:24px;animation-delay:-3s}
+.spooky-candle{position:absolute;font-size:23px;opacity:.55;filter:drop-shadow(0 0 12px rgba(255,153,78,.3));animation:candleFlicker 2.8s ease-in-out infinite}
+.candle-one{left:8%;bottom:18%}.candle-two{right:36%;bottom:12%;animation-delay:-1.2s}
+.spooky-pumpkin{position:absolute;right:5%;bottom:8%;font-size:44px;opacity:.5;filter:drop-shadow(0 0 15px rgba(255,111,35,.3));transform:rotate(9deg)}
+.spooky-console{position:relative;z-index:4;width:min(440px,100%);margin-top:24px;padding:13px 15px 12px;border:1px solid rgba(255,135,78,.25);border-radius:7px;background:linear-gradient(110deg,rgba(37,27,29,.86),rgba(20,19,25,.88));box-shadow:0 12px 35px rgba(0,0,0,.18);backdrop-filter:blur(10px)}
+.spooky-console-label{display:flex;align-items:center;gap:8px;color:#d9a58c;font-size:8px;font-weight:800;letter-spacing:2px}
+.spooky-console-label i{width:6px;height:6px;border-radius:50%;background:#ff7138;box-shadow:0 0 10px #ff7138}
+.spooky-console-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}
+.spooky-action{display:inline-flex;align-items:center;gap:7px;padding:8px 10px;border:1px solid #45343a;border-radius:4px;background:#211c23;color:#eee0dc;font-size:10px;cursor:pointer;transition:transform .2s,border-color .2s,background .2s}
+.spooky-action:hover,.spooky-action:focus-visible{transform:translateY(-2px);border-color:#ff884f;background:#302128;outline:none}
+.spooky-action.active{border-color:#ff7138;background:rgba(255,113,56,.16);box-shadow:0 0 18px rgba(255,113,56,.12)}
+.spooky-console-message{min-height:14px;margin:9px 0 0;color:#9e929b;font-size:9px;line-height:1.5}
+.spooky-toast{position:fixed;left:50%;bottom:28px;z-index:130;transform:translate(-50%,18px);padding:11px 16px;border:1px solid rgba(255,135,78,.38);border-radius:6px;background:rgba(24,19,25,.94);box-shadow:0 12px 35px rgba(0,0,0,.35);color:#f5e6df;font-size:11px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;backdrop-filter:blur(12px)}
+.spooky-toast.visible{opacity:1;transform:translate(-50%,0)}
+.spooky-spark{position:fixed;z-index:125;width:7px;height:7px;border-radius:50%;background:#ffad70;box-shadow:0 0 13px 4px rgba(255,119,54,.45);pointer-events:none;animation:sparkPop .8s ease-out forwards}
+body.haunted-lanterns .spooky-pumpkin{opacity:1;filter:drop-shadow(0 0 24px rgba(255,115,37,.8));animation:pumpkinGlow 1.7s ease-in-out infinite alternate}
+body.haunted-lanterns .spooky-moon{box-shadow:0 0 38px rgba(255,199,132,.35),0 0 120px rgba(255,143,79,.2)}
+body.haunted-lanterns .hero{background:radial-gradient(ellipse at 78% 47%,rgba(255,106,48,.16),transparent 38%),linear-gradient(115deg,#101014 35%,#1b1418 100%)}
+body.haunted-bats .spooky-bat{animation-duration:3.2s;opacity:.9}
+.halloween-card-glow .pack-card:hover{box-shadow:0 0 0 1px rgba(255,113,56,.16),0 18px 48px rgba(255,91,35,.12)}
+.catalog-section{position:relative}
+.catalog-section:before{content:"✦  ·  ☾  ·  ✦";position:absolute;right:7.2%;top:58px;color:rgba(255,145,94,.23);font-size:14px;letter-spacing:9px;pointer-events:none}
+.about-section{position:relative;overflow:hidden}
+.about-section:after{content:"🦇";position:absolute;right:3%;top:18px;font-size:34px;opacity:.12;transform:rotate(-15deg);pointer-events:none}
+.install-section{position:relative}
+.install-section:after{content:"✧  🎃  ✧";position:absolute;right:7.2%;top:55px;color:rgba(255,145,94,.32);font-size:22px;pointer-events:none}
+.step-card{overflow:hidden}
+.step-card:after{content:"";position:absolute;right:-25px;bottom:-35px;width:100px;height:100px;border:1px solid rgba(255,113,56,.09);border-radius:50%;box-shadow:0 0 0 12px rgba(255,113,56,.025),0 0 0 25px rgba(255,113,56,.018);pointer-events:none}
+@keyframes batDrift{0%,100%{transform:translate(0,0) rotate(-5deg)}50%{transform:translate(-25px,-13px) rotate(8deg)}}
+@keyframes ghostFloat{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-20px) rotate(5deg)}}
+@keyframes candleFlicker{0%,100%{opacity:.45;transform:rotate(-2deg)}50%{opacity:.75;transform:rotate(2deg)}}
+@keyframes pumpkinGlow{from{filter:drop-shadow(0 0 12px rgba(255,115,37,.55))}to{filter:drop-shadow(0 0 30px rgba(255,115,37,.95))}}
+@keyframes sparkPop{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--spark-x),var(--spark-y)) scale(.1)}}
+@media(max-width:700px){.spooky-moon{width:55px;height:55px;right:9%;top:9%;opacity:.5}.spooky-moon i{width:43px;height:43px}.spooky-bat{font-size:16px}.spooky-ghost{font-size:25px}.spooky-console{margin-top:20px}.spooky-action{padding:8px}.catalog-section:before,.install-section:after{display:none}.spooky-pumpkin{font-size:32px;right:3%}}
+@media(prefers-reduced-motion:reduce){.spooky-bat,.spooky-ghost,.spooky-candle,body.haunted-lanterns .spooky-pumpkin{animation:none!important}}
