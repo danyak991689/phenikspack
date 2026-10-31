@@ -696,4 +696,111 @@ if (aiForm) aiForm.addEventListener("submit",function (event) {
   schedule(walk, 2600);
 })();
 
+
+/* Interactive Halloween decorations */
+(function initHalloweenDecor() {
+  const ghostButton = document.getElementById("ghostButton");
+  const pumpkinButton = document.getElementById("pumpkinButton");
+  const potionButton = document.getElementById("potionButton");
+  const message = document.getElementById("spookyMessage");
+  if (!ghostButton || !pumpkinButton || !potionButton || !message) return;
+
+  const ghostLines = [
+    "Бу-у! Я всего лишь дружелюбный призрак каталога.",
+    "Говорят, в полночь даже ресурспаки оживают…",
+    "Я видел пак, от которого скелеты стали стильными.",
+    "Не бойся темноты. Бойся несовместимых версий.",
+    "Мяу? Ой, это котик научил меня здороваться."
+  ];
+  const potionLines = [
+    "Зелье скорости! Баты теперь летают быстрее.",
+    "Зелье ночного зрения: теперь видно каждый пиксель.",
+    "Зелье удачи! Пусть выпадет идеальный ресурспак.",
+    "Зелье огня! Тыквы засияли ярче.",
+    "Зелье невидимости… где кнопка? Я её потерял."
+  ];
+  let toastTimer = null;
+
+  function showMessage(text) {
+    message.textContent = text;
+    let toast = document.querySelector(".spooky-toast");
+    if (!toast) {
+      toast = document.createElement("div");
+      toast.className = "spooky-toast";
+      toast.setAttribute("role", "status");
+      document.body.appendChild(toast);
+    }
+    toast.textContent = text;
+    toast.classList.add("visible");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toast.classList.remove("visible"); }, 2600);
+  }
+  function sparkleBurst(count) {
+    for (let i = 0; i < count; i++) {
+      const spark = document.createElement("span");
+      spark.className = "spooky-spark";
+      spark.setAttribute("aria-hidden", "true");
+      spark.style.left = (18 + Math.random() * 64) + "vw";
+      spark.style.top = (18 + Math.random() * 58) + "vh";
+      spark.style.setProperty("--spark-x", (Math.random() * 100 - 50) + "px");
+      spark.style.setProperty("--spark-y", (Math.random() * -100 - 20) + "px");
+      document.body.appendChild(spark);
+      setTimeout(function () { spark.remove(); }, 900);
+    }
+  }
+
+  ghostButton.addEventListener("click", function () {
+    showMessage(ghostLines[Math.floor(Math.random() * ghostLines.length)]);
+    ghostButton.classList.add("active");
+    setTimeout(function () { ghostButton.classList.remove("active"); }, 900);
+    sparkleBurst(7);
+  });
+  pumpkinButton.addEventListener("click", function () {
+    const active = document.body.classList.toggle("haunted-lanterns");
+    pumpkinButton.classList.toggle("active", active);
+    pumpkinButton.querySelector("span").textContent = active ? "Погасить" : "Огоньки";
+    showMessage(active ? "Все тыквы зажглись. Теперь здесь по-настоящему жутко уютно." : "Фонарики погасли. Но кто-то всё ещё шуршит в темноте…");
+    if (active) sparkleBurst(12);
+  });
+  potionButton.addEventListener("click", function () {
+    const active = document.body.classList.toggle("haunted-bats");
+    potionButton.classList.toggle("active", active);
+    showMessage(potionLines[Math.floor(Math.random() * potionLines.length)]);
+    sparkleBurst(16);
+  });
+
+  // Small floating bats drift through the hero; no external assets required.
+  const sky = document.querySelector(".spooky-scenery");
+  if (sky) {
+    for (let i = 0; i < 4; i++) {
+      const bat = document.createElement("span");
+      bat.className = "spooky-bat generated-bat";
+      bat.textContent = "🦇";
+      bat.style.left = (12 + i * 19) + "%";
+      bat.style.top = (24 + (i % 2) * 34) + "%";
+      bat.style.animationDelay = (-i * 1.7) + "s";
+      bat.style.fontSize = (13 + (i % 3) * 4) + "px";
+      sky.appendChild(bat);
+    }
+  }
+
+  // A small seasonal sparkle on pointer movement, throttled naturally by distance.
+  let lastX = -100, lastY = -100;
+  document.addEventListener("pointermove", function (event) {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (Math.hypot(event.clientX - lastX, event.clientY - lastY) < 90) return;
+    lastX = event.clientX;
+    lastY = event.clientY;
+    const dot = document.createElement("span");
+    dot.className = "spooky-spark";
+    dot.style.left = event.clientX + "px";
+    dot.style.top = event.clientY + "px";
+    dot.style.setProperty("--spark-x", (Math.random() * 28 - 14) + "px");
+    dot.style.setProperty("--spark-y", (Math.random() * -32 - 8) + "px");
+    document.body.appendChild(dot);
+    setTimeout(function () { dot.remove(); }, 850);
+  }, {passive:true});
+})();
+
+
 loadCatalog();
