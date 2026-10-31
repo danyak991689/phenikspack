@@ -9,6 +9,10 @@ const favoriteCount = document.querySelector("#favoriteCount");
 const emptyState = document.querySelector("#emptyState");
 const catalogNote = document.querySelector(".catalog-note");
 let packs = [];
+let displayedPackCount = 36;
+const PACKS_PER_BATCH = 36;
+const loadMoreButton = document.querySelector("#loadMorePacks");
+const catalogMoreCount = document.querySelector("#catalogMoreCount");
 let activeFilter = "all";
 let showFavorites = false;
 let favorites = new Set();
@@ -80,7 +84,9 @@ function render() {
     visible = (matchedPacks.length ? matchedPacks : rankedPacks.slice(0, 24)).map(function (item) { return item.pack; });
     aiAnalysis.noExactMatches = matchedPacks.length === 0;
   }
-  grid.innerHTML = visible.map(function (pack) {
+  const totalVisible = visible.length;
+  const pageVisible = visible.slice(0, displayedPackCount);
+  grid.innerHTML = pageVisible.map(function (pack) {
     const category = packCategory(pack);
     const visual = getPackVisual(pack);
     const visualStyle = "--pack-hue:" + visual.hue + "deg;--pack-drift:" + visual.drift + "px;--pack-delay:" + visual.delay + "s";
@@ -107,8 +113,13 @@ function render() {
         '<button class="coming-soon source-link details-button" type="button" data-open-pack="' + escapeHTML(pack.project_id) + '">ПОДРОБНЕЕ ↗</button></div>' +
       '</div></article>';
   }).join("");
-  emptyState.hidden = visible.length !== 0;
-  grid.hidden = visible.length === 0;
+  emptyState.hidden = totalVisible !== 0;
+  grid.hidden = totalVisible === 0;
+  if (loadMoreButton) {
+    const hasMore = pageVisible.length < totalVisible;
+    loadMoreButton.hidden = !hasMore;
+    if (catalogMoreCount) catalogMoreCount.textContent = hasMore ? "Показано " + pageVisible.length + " из " + totalVisible : (totalVisible ? "Показаны все " + totalVisible + " паков" : "");
+  }
   favoriteCount.textContent = favorites.size;
   favoritesToggle.setAttribute("aria-pressed", String(showFavorites));
   favoritesToggle.classList.toggle("active", showFavorites);
@@ -132,7 +143,11 @@ async function loadCatalog() {
   grid.innerHTML = "";
   try {
     const offsets = Array.from({length:10}, function (_, index) { return index * 100; });
-    const pages = await Promise.all(offsets.map(fetchPacks));
+    const pages = [];
+    for (let i = 0; i < offsets.length; i += 2) {
+      const batch = await Promise.all(offsets.slice(i, i + 2).map(fetchPacks));
+      pages.push.apply(pages, batch);
+    }
     const seen = new Set();
     packs = pages.flatMap(function (page) { return page.hits || []; }).filter(function (pack) {
       if (!pack.project_id || seen.has(pack.project_id)) return false;
@@ -150,10 +165,16 @@ async function loadCatalog() {
     if (retry) retry.addEventListener("click", loadCatalog);
   }
 }
+if (loadMoreButton) loadMoreButton.addEventListener("click", function () {
+  displayedPackCount += PACKS_PER_BATCH;
+  render();
+});
+
 filters.addEventListener("click", function (event) {
   const button = event.target.closest("[data-filter]");
   if (!button) return;
   activeFilter = button.dataset.filter;
+  displayedPackCount = PACKS_PER_BATCH;
   filters.querySelectorAll(".filter-chip").forEach(function (chip) {
     chip.classList.toggle("active", chip === button);
   });
@@ -177,11 +198,13 @@ function updateSearchClear() {
   if (searchClear) searchClear.hidden = !search.value;
 }
 search.addEventListener("input", function () {
+  displayedPackCount = PACKS_PER_BATCH;
   resetAIState();
   updateSearchClear();
   render();
 });
 search.addEventListener("search", function () {
+  displayedPackCount = PACKS_PER_BATCH;
   resetAIState();
   updateSearchClear();
   render();
@@ -199,10 +222,12 @@ if (searchClear) searchClear.addEventListener("click", function () {
   search.focus();
 });
 favoritesToggle.addEventListener("click", function () {
+  displayedPackCount = PACKS_PER_BATCH;
   showFavorites = !showFavorites;
   render();
 });
 document.querySelector("#resetFilters").addEventListener("click", function () {
+  displayedPackCount = PACKS_PER_BATCH;
   resetAIState();
   activeFilter = "all";
   showFavorites = false;
