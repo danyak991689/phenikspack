@@ -240,3 +240,13 @@ body{background-image:radial-gradient(ellipse at 4% 16%,rgba(111,76,138,.09),tra
 .spooky-console{position:relative;z-index:3}
 @media(max-width:600px){.catalog-section:before{font-size:7px}.pack-grid{gap:13px}}
 @media(prefers-reduced-motion:reduce){.pack-card,.step-card{transition:none}}
+
+/* Stronger pack-by-pack identity */
+.pack-card{border-top:2px solid var(--card-accent,var(--orange))}
+.pack-info h3:before{content:"";display:inline-block;width:5px;height:5px;margin:0 8px 2px 0;border-radius:1px;background:var(--card-accent,var(--orange));box-shadow:0 0 10px var(--card-accent,var(--orange))}
+.pack-card:nth-child(3n+1) .pack-cover:after{border-color:rgba(142,231,255,.28)}
+.pack-card:nth-child(3n+2) .pack-cover:after{border-color:rgba(255,154,140,.28)}
+.pack-card:nth-child(3n) .pack-cover:after{border-color:rgba(200,255,114,.25)}
+.about-points>div{position:relative}
+.about-points>div b{color:var(--orange)}
+.install-tip{border-color:rgba(255,113,56,.3);background:linear-gradient(90deg,rgba(255,113,56,.07),transparent)}
