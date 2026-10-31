@@ -750,6 +750,39 @@ if(aiForm)aiForm.addEventListener("submit",function(event){event.preventDefault(
 })();
 
 
+/* Pixel totem split animation on every resource-pack download */
+(function initTotemDownloadEffect() {
+  let activeOverlay = null;
+  function playTotemBreak() {
+    if (activeOverlay) activeOverlay.remove();
+    const overlay = document.createElement("div");
+    overlay.className = "totem-break-overlay";
+    overlay.setAttribute("aria-hidden", "true");
+    overlay.innerHTML =
+      '<div class="totem-break-scene">' +
+        '<div class="totem-beam"></div>' +
+        '<div class="totem-flash"></div>' +
+        '<div class="totem-pixel-sparks"></div>' +
+        '<div class="totem-sprite">' +
+          '<div class="totem-half totem-half-left"><i class="totem-eye"></i><i class="totem-gem"></i></div>' +
+          '<div class="totem-half totem-half-right"><i class="totem-eye"></i><i class="totem-gem"></i></div>' +
+        '</div>' +
+        '<div class="totem-ground-glow"></div>' +
+      '</div>';
+    document.body.appendChild(overlay);
+    activeOverlay = overlay;
+    window.setTimeout(function () {
+      if (activeOverlay === overlay) {
+        overlay.remove();
+        activeOverlay = null;
+      }
+    }, 2300);
+  }
+  document.addEventListener("click", function (event) {
+    const downloadLink = event.target.closest && event.target.closest("a.modal-download");
+    if (!downloadLink) return;
+    playTotemBreak();
+  });
+})();
+
 loadCatalog();
-
-
