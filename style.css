@@ -643,3 +643,11 @@ body.profile-open{overflow:hidden}
 @media(max-width:600px){.pheniks-audio{left:12px;bottom:12px;padding:8px 10px;gap:9px}.audio-volume{padding-left:8px}.audio-volume input{width:48px}.track-toast{right:12px;bottom:76px;min-width:190px}}
 @media(prefers-reduced-motion:reduce){.track-toast,.pheniks-audio *{transition:none!important;animation:none!important}}
 
+
+/* Catalog type tabs */
+.catalog-type-switch{display:flex;gap:8px;margin:0 0 22px;padding:5px;width:max-content;max-width:100%;border:1px solid rgba(120,160,205,.18);border-radius:12px;background:rgba(8,16,29,.62)}
+.catalog-type-tab{display:flex;align-items:center;gap:10px;padding:11px 17px;border:1px solid transparent;border-radius:8px;background:transparent;color:#9aafc5;font:700 12px var(--font);cursor:pointer;transition:background .2s,border-color .2s,color .2s}
+.catalog-type-tab span{padding:3px 7px;border-radius:6px;background:rgba(125,160,200,.1);font-size:9px;color:#91a9c3}
+.catalog-type-tab.active{border-color:rgba(82,169,255,.28);background:linear-gradient(135deg,rgba(29,94,151,.38),rgba(22,46,74,.55));color:#eff8ff;box-shadow:0 0 22px rgba(54,151,235,.1)}
+.catalog-type-tab.active span{background:rgba(74,166,255,.17);color:#9bd6ff}
+@media(max-width:560px){.catalog-type-switch{width:100%}.catalog-type-tab{flex:1;justify-content:center;padding:10px 8px}}
