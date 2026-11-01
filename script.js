@@ -1,6 +1,7 @@
 const API = "https://api.modrinth.com/v2/search";
 const PAGE_SIZE = 100;
-const TARGET_COUNT = 1000;
+const TARGET_COUNTS = {resourcepack:1000,mod:1500};
+let activeCatalogType = "resourcepack";
 const grid = document.querySelector("#packGrid");
 const search = document.querySelector("#searchInput");
 const filters = document.querySelector("#filterRow");
@@ -9,6 +10,9 @@ const favoriteCount = document.querySelector("#favoriteCount");
 const emptyState = document.querySelector("#emptyState");
 const catalogNote = document.querySelector(".catalog-note");
 let packs = [];
+const catalogTypeSwitch = document.querySelector("#catalogTypeSwitch");
+const catalogHeading = document.querySelector("#catalogHeading");
+const catalogIntro = document.querySelector("#catalogIntro");
 let displayedPackCount = 36;
 const PACKS_PER_BATCH = 36;
 const loadMoreButton = document.querySelector("#loadMorePacks");
@@ -34,7 +38,20 @@ function packCategory(pack) {
   return {key:"other",label:"ДРУГОЕ"};
 }
 function projectURL(pack) {
-  return "https://modrinth.com/resourcepack/" + encodeURIComponent(pack.slug || pack.project_id);
+  const type = pack.project_type || activeCatalogType;
+  return "https://modrinth.com/" + (type === "mod" ? "mod" : "resourcepack") + "/" + encodeURIComponent(pack.slug || pack.project_id);
+}
+function catalogCategory(pack) {
+  if (activeCatalogType !== "mod") return packCategory(pack);
+  const tags=(pack.categories||[]).concat(pack.display_categories||[]).map(x=>String(x).toLowerCase().replace(/-/g,"_"));
+  if(tags.some(x=>["optimization","performance"].includes(x)))return {key:"optimization",label:"ОПТИМИЗАЦИЯ"};
+  if(tags.includes("technology"))return {key:"technology",label:"ТЕХНОЛОГИИ"};
+  if(tags.includes("magic"))return {key:"magic",label:"МАГИЯ"};
+  if(tags.some(x=>["adventure","combat"].includes(x)))return {key:"adventure",label:"ПРИКЛЮЧЕНИЯ"};
+  if(tags.some(x=>["worldgen","world_generation"].includes(x)))return {key:"worldgen",label:"ГЕНЕРАЦИЯ МИРА"};
+  if(tags.includes("decoration"))return {key:"decoration",label:"ДЕКОР"};
+  if(tags.some(x=>["utility","library"].includes(x)))return {key:"utility",label:"УТИЛИТЫ"};
+  return {key:"other",label:"ДРУГОЕ"};
 }
 function formatDownloads(value) {
   return new Intl.NumberFormat("ru-RU", {notation:"compact",maximumFractionDigits:1}).format(value || 0);
@@ -70,8 +87,8 @@ function render() {
     : packs;
   const requestedVersionExists = !aiAnalysis || !aiAnalysis.version || sourcePacks.some(function(pack){return (pack.versions||[]).includes(aiAnalysis.version);});
   let visible = sourcePacks.filter(function (pack) {
-    const category = packCategory(pack);
-    const text = [pack.title, pack.description, pack.author, category.label, (pack.versions || []).join(" ")].join(" ").toLowerCase();
+    const category = catalogCategory(pack);
+    const text = [pack.title, pack.description, pack.author, category.label, (pack.versions || []).join(" "), (pack.categories || []).join(" ")].join(" ").toLowerCase();
     return (activeFilter === "all" || category.key === activeFilter) &&
       (!aiAnalysis || !aiAnalysis.version || !requestedVersionExists || (pack.versions || []).includes(aiAnalysis.version)) &&
       text.includes(query) && (!showFavorites || favorites.has(pack.project_id));
@@ -87,7 +104,7 @@ function render() {
   const totalVisible = visible.length;
   const pageVisible = visible.slice(0, displayedPackCount);
   grid.innerHTML = pageVisible.map(function (pack) {
-    const category = packCategory(pack);
+    const category = catalogCategory(pack);
     const visual = getPackVisual(pack);
     const visualStyle = "--pack-hue:" + visual.hue + "deg;--pack-drift:" + visual.drift + "px;--pack-delay:" + visual.delay + "s";
     const saved = favorites.has(pack.project_id);
@@ -123,11 +140,11 @@ function render() {
   favoriteCount.textContent = favorites.size;
   favoritesToggle.setAttribute("aria-pressed", String(showFavorites));
   favoritesToggle.classList.toggle("active", showFavorites);
-  if (catalogNote) catalogNote.innerHTML = '<span class="note-icon">i</span> В каталоге ' + packs.length + ' ресурс-паков. Подробности и скачивание доступны прямо здесь.';
+  if (catalogNote) catalogNote.innerHTML = '<span class="note-icon">i</span> В каталоге ' + packs.length + (activeCatalogType === "mod" ? ' модов.' : ' ресурс-паков.') + ' Подробности и скачивание доступны прямо здесь.';
 }
 async function fetchPacks(offset) {
   const params = new URLSearchParams({
-    facets: JSON.stringify([["project_type:resourcepack"]]),
+    facets: JSON.stringify([["project_type:" + activeCatalogType]]),
     index: "downloads",
     limit: String(PAGE_SIZE),
     offset: String(offset)
@@ -139,10 +156,11 @@ async function fetchPacks(offset) {
   return response.json();
 }
 async function loadCatalog() {
-  if (catalogNote) catalogNote.innerHTML = '<span class="note-icon">…</span> Загружаю популярные ресурс-паки с Modrinth…';
+  if (catalogNote) catalogNote.innerHTML = '<span class="note-icon">…</span> Загружаю ' + (activeCatalogType === "mod" ? 'моды' : 'ресурс-паки') + ' с Modrinth…';
   grid.innerHTML = "";
   try {
-    const offsets = Array.from({length:10}, function (_, index) { return index * 100; });
+    const targetCount = TARGET_COUNTS[activeCatalogType];
+    const offsets = Array.from({length:Math.ceil(targetCount / 100)}, function (_, index) { return index * 100; });
     const pages = [];
     for (let i = 0; i < offsets.length; i += 2) {
       const batch = await Promise.all(offsets.slice(i, i + 2).map(fetchPacks));
@@ -153,8 +171,8 @@ async function loadCatalog() {
       if (!pack.project_id || seen.has(pack.project_id)) return false;
       seen.add(pack.project_id);
       return true;
-    }).slice(0, TARGET_COUNT);
-    if (!packs.length) throw new Error("Modrinth не вернул ресурс-паки.");
+    }).slice(0, targetCount);
+    if (!packs.length) throw new Error("Modrinth не вернул проекты.");
     render();
   } catch (error) {
     console.error(error);
@@ -170,6 +188,21 @@ if (loadMoreButton) loadMoreButton.addEventListener("click", function () {
   render();
 });
 
+if (catalogTypeSwitch) catalogTypeSwitch.addEventListener("click", function(event) {
+  const tab=event.target.closest("[data-catalog-type]");
+  if(!tab || tab.dataset.catalogType===activeCatalogType)return;
+  activeCatalogType=tab.dataset.catalogType;
+  packs=[];aiExtraPacks=[];aiAnalysis=null;showFavorites=false;activeFilter="all";displayedPackCount=PACKS_PER_BATCH;search.value="";
+  catalogTypeSwitch.querySelectorAll("[data-catalog-type]").forEach(function(item){const active=item===tab;item.classList.toggle("active",active);item.setAttribute("aria-selected",String(active));});
+  if(catalogHeading)catalogHeading.innerHTML=activeCatalogType==="mod"?"Найди свой <span>мод.</span>":"Найди свой <span>стиль.</span>";
+  if(catalogIntro)catalogIntro.textContent=activeCatalogType==="mod"?"От оптимизации до новых измерений — собирай Minecraft под себя.":"Выбирай настроение, изучай подборки и сохраняй то, что понравилось.";
+  search.placeholder=activeCatalogType==="mod"?"Поиск модов...":"Поиск ресурспаков...";
+  if(aiForm)aiForm.hidden=activeCatalogType==="mod";
+  filters.innerHTML=activeCatalogType==="mod"
+    ? '<button class="filter-chip active" data-filter="all">Все</button><button class="filter-chip" data-filter="optimization">Оптимизация</button><button class="filter-chip" data-filter="technology">Технологии</button><button class="filter-chip" data-filter="magic">Магия</button><button class="filter-chip" data-filter="adventure">Приключения</button><button class="filter-chip" data-filter="worldgen">Мир</button><button class="filter-chip" data-filter="utility">Утилиты</button>'
+    : '<button class="filter-chip active" data-filter="all">Все</button><button class="filter-chip" data-filter="realism">Реализм</button><button class="filter-chip" data-filter="pvp">PvP</button><button class="filter-chip" data-filter="vanilla">Vanilla</button><button class="filter-chip" data-filter="atmosphere">Атмосфера</button>';
+  loadCatalog();
+});
 filters.addEventListener("click", function (event) {
   const button = event.target.closest("[data-filter]");
   if (!button) return;
@@ -481,7 +514,7 @@ async function openPackDetails(projectId) {
         ' · ' + escapeHTML(version.version_type || "release") + '</option>';
     }).join("");
     detailModal.querySelector("#packModalContent").innerHTML =
-      '<div class="modal-eyebrow">PHENIKSPACK / RESOURCE PACK</div>' +
+      '<div class="modal-eyebrow">PHENIKSPACK / ' + (activeCatalogType === "mod" ? "MOD" : "RESOURCE PACK") + '</div>' +
       '<div class="modal-title-row">' +
         (project.icon_url ? '<img class="modal-icon" src="' + escapeHTML(project.icon_url) + '" alt="">' : '') +
         '<div><h2 id="packModalTitle">' + escapeHTML(project.title || pack.title) + '</h2>' +
@@ -490,7 +523,7 @@ async function openPackDetails(projectId) {
       '</div>' +
       '<p class="modal-description">' + escapeHTML(project.description || pack.description || "Описание не указано.") + '</p>' +
       galleryHTML +
-      '<div class="modal-stats"><span>Поддержка Minecraft: <b>' + escapeHTML((project.game_versions || pack.versions || []).slice(-8).join(", ") || "не указана") + '</b></span>' +
+      '<div class="modal-stats"><span>Поддержка Minecraft: <b>' + escapeHTML((project.game_versions || pack.versions || []).slice(-8).join(", ") || "не указана") + '</b></span>' + (activeCatalogType === "mod" ? '<span>Загрузчики: <b>' + escapeHTML((project.loaders || []).join(", ") || "не указаны") + '</b></span>' : '') +
       '<span>Лицензия: <b>' + escapeHTML((project.license && (project.license.name || project.license.id)) || "не указана") + '</b></span></div>' +
       '<div class="modal-download-section"><label for="packVersionSelect">Выбери версию</label>' +
         (versionOptions ? '<select id="packVersionSelect">' + versionOptions + '</select>' : '<p class="modal-muted">Версии пока не опубликованы.</p>') +
@@ -667,7 +700,7 @@ async function fetchAIPacks(analysis){
   const responses=await Promise.all(unique.map(async function(term){
     const params=new URLSearchParams({
       query:term,
-      facets:JSON.stringify([["project_type:resourcepack"]]),
+      facets:JSON.stringify([["project_type:" + activeCatalogType]]),
       index:"relevance",
       limit:"100"
     });
