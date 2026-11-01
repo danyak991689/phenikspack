@@ -1,3 +1,32 @@
+const copySiteLinkButton = document.querySelector("#copySiteLink");
+if (copySiteLinkButton) {
+  copySiteLinkButton.addEventListener("click", async () => {
+    const siteLink = window.location.href.split("#")[0];
+    const originalText = copySiteLinkButton.innerHTML;
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(siteLink);
+      } else {
+        const field = document.createElement("textarea");
+        field.value = siteLink;
+        field.setAttribute("readonly", "");
+        field.style.position = "fixed";
+        field.style.opacity = "0";
+        document.body.appendChild(field);
+        field.select();
+        const copied = document.execCommand("copy");
+        field.remove();
+        if (!copied) throw new Error("Clipboard copy failed");
+      }
+      copySiteLinkButton.innerHTML = "Ссылка скопирована <span>✓</span>";
+      setTimeout(() => { copySiteLinkButton.innerHTML = originalText; }, 2200);
+    } catch (error) {
+      copySiteLinkButton.innerHTML = "Не удалось скопировать";
+      setTimeout(() => { copySiteLinkButton.innerHTML = originalText; }, 2200);
+    }
+  });
+}
+
 const API = "https://api.modrinth.com/v2/search";
 const PAGE_SIZE = 100;
 const TARGET_COUNTS = {resourcepack:1000,mod:1500};
