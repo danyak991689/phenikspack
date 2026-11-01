@@ -551,3 +551,60 @@ body.profile-open{overflow:hidden}
   font-weight:1000;
   text-shadow:2px 0 #7c3451;
 }
+
+
+/* PHENIKSPACK NOTES — investigation corkboard */
+.notes-section{padding-top:92px;padding-bottom:92px}
+.notes-heading{margin-bottom:28px}
+.notes-toolbar{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:15px;padding:14px 16px;border:1px solid rgba(255,255,255,.09);border-radius:13px;background:rgba(16,19,27,.88)}
+.notes-toolbar-copy,.notes-actions{display:flex;align-items:center;gap:12px}
+.notes-toolbar-copy{font-size:10px;font-weight:900;letter-spacing:1.4px;color:#d8e0ed}
+.notes-live-dot{width:7px;height:7px;border-radius:50%;background:#ff5555;box-shadow:0 0 12px #ff5555}
+.notes-local-label{font-size:10px;font-weight:500;letter-spacing:0;color:#788394}
+.notes-action{border:1px solid rgba(255,255,255,.13);border-radius:8px;background:#171d29;color:#dce7f6;padding:10px 13px;font:700 11px var(--font);cursor:pointer;transition:.2s}
+.notes-action:hover{border-color:#e35b65;color:#fff;transform:translateY(-1px)}
+.notes-action:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.notes-add{background:linear-gradient(120deg,#b9434e,#792f42);border-color:#d85c66;color:#fff}
+.notes-add:hover{background:linear-gradient(120deg,#d34e5a,#92364c)}
+.notes-connect-active{background:rgba(183,48,62,.22);border-color:#ed5967;color:#ffb2b8}
+.notes-board-wrap{padding:9px;border:1px solid rgba(255,255,255,.1);border-radius:17px;background:#11151e;box-shadow:0 22px 65px rgba(0,0,0,.28)}
+.notes-board{position:relative;isolation:isolate;overflow:hidden;min-height:590px;border-radius:10px;background-color:#25252a;background-image:radial-gradient(rgba(255,255,255,.055) .8px,transparent .8px),linear-gradient(135deg,rgba(255,255,255,.025),transparent 55%);background-size:18px 18px,100% 100%}
+.notes-board:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.4;background:repeating-linear-gradient(0deg,transparent 0 4px,rgba(0,0,0,.07) 5px)}
+.notes-board-grid{position:absolute;inset:0;opacity:.08;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.15) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.15) 1px,transparent 1px);background-size:44px 44px}
+.notes-board-stamp{position:absolute;right:22px;top:19px;color:rgba(255,255,255,.19);font:900 10px/1.55 var(--font);letter-spacing:2px;text-align:right;transform:rotate(3deg);pointer-events:none}
+.notes-empty{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;color:#87909d;pointer-events:none}
+.notes-empty span{font-size:35px;color:#c44c58}
+.notes-empty b{font-size:16px;color:#d6dbe3}
+.notes-empty small{font-size:11px;max-width:240px;line-height:1.6}
+.notes-empty[hidden]{display:none}
+.notes-threads{position:absolute;inset:0;width:100%;height:100%;overflow:visible;z-index:1;pointer-events:none}
+.notes-thread{fill:none;stroke:#c92e3b;stroke-width:2.4;stroke-linecap:round;filter:drop-shadow(0 1px 1px rgba(0,0,0,.65))}
+.notes-thread-knot{fill:#e34d58;stroke:#541e28;stroke-width:1}
+.notes-cards{position:absolute;inset:0;z-index:2;pointer-events:none}
+.note-card{position:absolute;width:clamp(145px,19%,210px);min-height:150px;padding:0 13px 12px;background:#f0df9c;color:#29251e;box-shadow:2px 9px 18px rgba(0,0,0,.38);transform:rotate(var(--note-angle,0deg));pointer-events:auto;transition:box-shadow .15s;clip-path:polygon(0 0,100% 0,100% 100%,0 100%)}
+.note-card.note-pink{background:#edb5b1}
+.note-card.note-blue{background:#b6cbd5}
+.note-card.note-green{background:#c5d0a1}
+.note-card.note-white{background:#e5e0d5}
+.note-card.note-selected{outline:2px solid #ff6470;outline-offset:3px;z-index:5;box-shadow:0 0 0 5px rgba(215,56,70,.15),3px 12px 24px rgba(0,0,0,.5)}
+.note-pin{position:absolute;top:-1px;left:50%;width:12px;height:12px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle at 35% 30%,#ff9a9e 0 18%,#b92735 45%,#661d29 100%);box-shadow:0 2px 3px rgba(0,0,0,.5);z-index:3}
+.note-dragbar{height:25px;margin:0 -13px 8px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:grab;user-select:none;border-bottom:1px dashed rgba(48,36,28,.2);font:800 9px var(--font);letter-spacing:1px;color:rgba(40,31,24,.58)}
+.note-dragbar:active{cursor:grabbing}
+.note-card textarea{display:block;width:100%;height:76px;resize:vertical;border:0;outline:0;background:transparent;color:#29251e;font:600 12px/1.55 var(--font);padding:0}
+.note-card textarea::placeholder{color:rgba(41,37,30,.48)}
+.note-card-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;padding-top:7px;border-top:1px dashed rgba(48,36,28,.22);font:700 9px var(--font);color:rgba(40,31,24,.65)}
+.note-rotate{width:72px;accent-color:#bd3543;cursor:pointer}
+.notes-hint{margin:12px 4px 0;color:#798394;font-size:10px;line-height:1.6}
+.notes-board.notes-connecting{cursor:crosshair}
+.note-card.note-connect-first{outline:2px dashed #f45d68;outline-offset:4px}
+@media(max-width:760px){
+ .notes-section{padding-top:65px;padding-bottom:65px}
+ .notes-toolbar{align-items:flex-start;flex-direction:column}
+ .notes-actions{width:100%;flex-wrap:wrap}
+ .notes-action{flex:1;min-width:115px;padding:10px 8px;font-size:10px}
+ .notes-board{min-height:680px}
+ .note-card{width:clamp(132px,39%,190px);min-height:145px;padding-left:10px;padding-right:10px}
+ .note-dragbar{margin-left:-10px;margin-right:-10px}
+ .notes-local-label{font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){.notes-action{transition:none}}
