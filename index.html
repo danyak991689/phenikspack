@@ -52,6 +52,7 @@
     <button class="profile-button" id="profileButton" type="button"><span class="profile-button-avatar" id="profileButtonAvatar">PH</span><span id="profileButtonLabel">Личный кабинет</span></button>
     <nav class="nav-links" aria-label="Основная навигация">
       <a href="/">Каталог</a>
+      <a href="#notes">Заметки</a>
       <a href="#about">О проекте</a>
       <a href="#install">Установка</a>
     </nav>
@@ -119,6 +120,31 @@
       <div class="hero-bottom"><span>01 / 03</span><span class="hero-bottom-line"></span><span>SCROLL TO EXPLORE ↓</span></div>
     </section>
 
+
+    <section class="notes-section section-wrap" id="notes">
+      <div class="section-heading notes-heading">
+        <div><div class="eyebrow">PERSONAL WORKSPACE</div><h2>Стена <span>заметок.</span></h2></div>
+        <p>Собирай идеи, прикалывай листочки под любым углом и связывай их красными нитями.</p>
+      </div>
+      <div class="notes-toolbar">
+        <div class="notes-toolbar-copy"><span class="notes-live-dot"></span><span>ЛИЧНАЯ ДОСКА</span><span class="notes-local-label">Сохраняется в этом браузере</span></div>
+        <div class="notes-actions">
+          <button class="notes-action notes-add" id="noteAdd" type="button">＋ Новая заметка</button>
+          <button class="notes-action" id="noteConnect" type="button">↗ Соединить нитью</button>
+          <button class="notes-action notes-delete" id="noteDelete" type="button" disabled>Удалить выбранную</button>
+        </div>
+      </div>
+      <div class="notes-board-wrap">
+        <div class="notes-board" id="notesBoard" aria-label="Доска заметок">
+          <div class="notes-board-grid"></div>
+          <div class="notes-board-stamp">PHENIKS<br>INVESTIGATION / 01</div>
+          <div class="notes-empty" id="notesEmpty"><span>✳</span><b>Доска пока пуста</b><small>Добавь первый листочек — и начинай собирать идеи.</small></div>
+          <svg class="notes-threads" id="notesThreads" aria-hidden="true"></svg>
+          <div class="notes-cards" id="notesCards"></div>
+        </div>
+      </div>
+      <p class="notes-hint" id="notesHint">Перетаскивай листочки за верхнюю полоску. Выбери заметку, чтобы изменить угол или удалить её.</p>
+    </section>
 
     <section class="catalog-section section-wrap" id="catalog">
       <div class="section-heading">
