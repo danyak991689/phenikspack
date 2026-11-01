@@ -200,14 +200,13 @@
     <span class="footer-copy">© 2026 PheniksPack. Неофициальный фанатский проект.</span>
   </footer>
 
-  <div class="pheniks-audio" id="pheniksAudio" aria-label="Фоновая музыка">
-    <button class="audio-toggle" id="audioToggle" type="button" aria-label="Включить фоновую музыку" title="Фоновая музыка">
-      <span class="audio-toggle-icon" id="audioToggleIcon">♫</span>
-      <span class="audio-toggle-copy"><b>АТМОСФЕРА</b><small id="audioState">МУЗЫКА ВЫКЛЮЧЕНА</small></span>
-    </button>
-    <label class="audio-volume" title="Громкость">
-      <span>VOL</span><input id="audioVolume" type="range" min="0" max="100" value="24" aria-label="Громкость музыки">
-    </label>
+  <div class="pheniks-audio lavash-audio" id="pheniksAudio" aria-label="Музыкальный плеер">
+    <div class="lavash-player-head">
+      <span class="audio-toggle-icon">♫</span>
+      <span class="audio-toggle-copy"><b>PHENIKS RADIO</b><small>СЕЙЧАС В ЭФИРЕ</small></span>
+    </div>
+    <iframe title="ЛАВАШ-ГОВЯДИНА — JorikRulit & YUNG FIMOZ" src="https://embed.music.apple.com/us/song/1830466940?theme=dark" height="90" width="100%" frameborder="0" allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation"></iframe>
+    <span class="lavash-caption">JorikRulit × YUNG FIMOZ</span>
   </div>
   <div class="track-toast" id="trackToast" role="status" aria-live="polite">
     <span class="track-toast-kicker">ТЕПЕРЬ ИГРАЕТ</span>
