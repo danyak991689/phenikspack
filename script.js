@@ -1082,3 +1082,25 @@ loadCatalog();
     },2700);
   });
 })();
+
+
+/* Vera's axolotl pops out from the moon */
+(function initAxolotlMoonEasterEgg(){
+  const moon=document.getElementById("axolotlMoon");
+  const scenery=document.querySelector(".spooky-scenery");
+  if(!moon||!scenery)return;
+  let playing=false;
+  moon.addEventListener("click",function(){
+    if(playing)return;
+    playing=true;
+    scenery.classList.remove("axolotl-party");
+    void scenery.offsetWidth;
+    scenery.classList.add("axolotl-party");
+    moon.setAttribute("aria-label","Аксолотль уже спрятался. Нажми ещё раз позже.");
+    window.setTimeout(function(){
+      scenery.classList.remove("axolotl-party");
+      moon.setAttribute("aria-label","Нажми на луну — секретный аксолотль");
+      playing=false;
+    },2850);
+  });
+})();
