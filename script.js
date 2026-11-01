@@ -1104,3 +1104,122 @@ loadCatalog();
     },2850);
   });
 })();
+
+
+/* Interactive notes board: draggable paper, adjustable angle, red string links */
+(function initPheniksNotes(){
+  const board=document.getElementById("notesBoard");
+  const cards=document.getElementById("notesCards");
+  const threads=document.getElementById("notesThreads");
+  const addButton=document.getElementById("noteAdd");
+  const connectButton=document.getElementById("noteConnect");
+  const deleteButton=document.getElementById("noteDelete");
+  const empty=document.getElementById("notesEmpty");
+  const hint=document.getElementById("notesHint");
+  if(!board||!cards||!threads||!addButton||!connectButton||!deleteButton)return;
+  const STORAGE_KEY="phenikspack-notes-board-v1";
+  const colors=["note-yellow","note-pink","note-blue","note-green","note-white"];
+  let notes=[],links=[],selectedId=null,connectMode=false,firstLinkId=null,drag=null;
+  let serial=0;
+  try{
+    const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null");
+    if(saved&&Array.isArray(saved.notes)&&Array.isArray(saved.links)){
+      notes=saved.notes.filter(n=>n&&typeof n.id==="string"&&typeof n.text==="string");
+      links=saved.links.filter(l=>l&&typeof l.a==="string"&&typeof l.b==="string");
+    }
+  }catch(error){console.warn("Notes storage unavailable",error);}
+  const save=()=>{try{localStorage.setItem(STORAGE_KEY,JSON.stringify({notes,links}));}catch(error){hint.textContent="Не удалось сохранить заметки: возможно, хранилище браузера заполнено.";}}
+  const id=()=> "note-"+Date.now().toString(36)+"-"+(++serial).toString(36);
+  function center(note){
+    const w=board.clientWidth,h=board.clientHeight;
+    return {x:note.x/100*w,y:note.y/100*h};
+  }
+  function drawThreads(){
+    const w=board.clientWidth,h=board.clientHeight;
+    threads.setAttribute("viewBox","0 0 "+w+" "+h);
+    threads.innerHTML="";
+    links=links.filter(l=>notes.some(n=>n.id===l.a)&&notes.some(n=>n.id===l.b)&&l.a!==l.b);
+    links.forEach(link=>{
+      const a=center(notes.find(n=>n.id===link.a)),b=center(notes.find(n=>n.id===link.b));
+      const bend=Math.max(12,Math.min(42,Math.abs(b.x-a.x)*.08));
+      const path=document.createElementNS("http://www.w3.org/2000/svg","path");
+      path.setAttribute("d","M "+a.x+" "+a.y+" Q "+((a.x+b.x)/2+bend)+" "+((a.y+b.y)/2-bend)+" "+b.x+" "+b.y);
+      path.setAttribute("class","notes-thread");
+      threads.appendChild(path);
+      [a,b].forEach(p=>{const knot=document.createElementNS("http://www.w3.org/2000/svg","circle");knot.setAttribute("cx",p.x);knot.setAttribute("cy",p.y);knot.setAttribute("r","3.3");knot.setAttribute("class","notes-thread-knot");threads.appendChild(knot);});
+    });
+  }
+  function render(){
+    cards.innerHTML="";
+    notes.forEach((note,index)=>{
+      const card=document.createElement("article");
+      card.className="note-card "+(colors.includes(note.color)?note.color:"note-yellow")+(note.id===selectedId?" note-selected":"")+(note.id===firstLinkId?" note-connect-first":"");
+      card.style.left=note.x+"%";card.style.top=note.y+"%";card.style.setProperty("--note-angle",(Number(note.angle)||0)+"deg");
+      card.dataset.noteId=note.id;
+      const pin=document.createElement("span");pin.className="note-pin";card.appendChild(pin);
+      const bar=document.createElement("div");bar.className="note-dragbar";bar.innerHTML="<span>ЛИСТОК / "+String(index+1).padStart(2,"0")+"</span><span>✣</span>";card.appendChild(bar);
+      const area=document.createElement("textarea");area.maxLength=500;area.placeholder="Напиши свою мысль...";area.value=note.text;area.setAttribute("aria-label","Текст заметки");area.addEventListener("input",()=>{note.text=area.value;save();});card.appendChild(area);
+      const footer=document.createElement("div");footer.className="note-card-footer";
+      const label=document.createElement("span");label.textContent="НАКЛОН";
+      const rotate=document.createElement("input");rotate.type="range";rotate.min="-45";rotate.max="45";rotate.step="1";rotate.value=String(note.angle||0);rotate.className="note-rotate";rotate.setAttribute("aria-label","Угол наклона заметки");
+      rotate.addEventListener("input",()=>{note.angle=Number(rotate.value);card.style.setProperty("--note-angle",note.angle+"deg");drawThreads();save();});
+      footer.append(label,rotate);card.appendChild(footer);
+      card.addEventListener("click",event=>{
+        if(connectMode){event.stopPropagation();handleConnect(note.id);return;}
+        selectedId=note.id;render();
+      });
+      bar.addEventListener("pointerdown",event=>{
+        if(connectMode)return;
+        event.preventDefault();event.stopPropagation();
+        selectedId=note.id;
+        const rect=board.getBoundingClientRect();
+        drag={id:note.id,pointerId:event.pointerId,dx:event.clientX-rect.left-note.x/100*board.clientWidth,dy:event.clientY-rect.top-note.y/100*board.clientHeight};
+        bar.setPointerCapture(event.pointerId);
+        card.classList.add("note-selected");
+      });
+      bar.addEventListener("pointermove",event=>{
+        if(!drag||drag.id!==note.id||drag.pointerId!==event.pointerId)return;
+        const rect=board.getBoundingClientRect();
+        note.x=Math.max(2,Math.min(91,((event.clientX-rect.left-drag.dx)/board.clientWidth)*100));
+        note.y=Math.max(3,Math.min(82,((event.clientY-rect.top-drag.dy)/board.clientHeight)*100));
+        card.style.left=note.x+"%";card.style.top=note.y+"%";drawThreads();
+      });
+      const stop=event=>{if(drag&&drag.id===note.id){drag=null;save();render();}};
+      bar.addEventListener("pointerup",stop);bar.addEventListener("pointercancel",stop);
+      cards.appendChild(card);
+    });
+    empty.hidden=notes.length>0;
+    deleteButton.disabled=!selectedId||!notes.some(n=>n.id===selectedId);
+    drawThreads();
+  }
+  function handleConnect(noteId){
+    if(!firstLinkId){firstLinkId=noteId;selectedId=noteId;hint.textContent="Теперь нажми на вторую заметку, чтобы натянуть между ними красную нить.";render();return;}
+    if(firstLinkId===noteId){firstLinkId=null;hint.textContent="Выбор первой заметки отменён.";render();return;}
+    const exists=links.some(l=>(l.a===firstLinkId&&l.b===noteId)||(l.a===noteId&&l.b===firstLinkId));
+    if(!exists)links.push({a:firstLinkId,b:noteId});
+    firstLinkId=null;connectMode=false;connectButton.classList.remove("notes-connect-active");connectButton.textContent="↗ Соединить нитью";
+    hint.textContent=exists?"Эта пара уже соединена.":"Красная нить добавлена. Можно соединить следующую пару.";
+    selectedId=noteId;save();render();
+  }
+  addButton.addEventListener("click",()=>{
+    const note={id:id(),text:"",x:10+(notes.length%4)*17,y:12+(notes.length%3)*23,angle:[-4,3,-2,5][notes.length%4],color:colors[notes.length%colors.length]};
+    notes.push(note);selectedId=note.id;connectMode=false;firstLinkId=null;connectButton.classList.remove("notes-connect-active");connectButton.textContent="↗ Соединить нитью";save();render();
+    const area=cards.querySelector('[data-note-id="'+note.id+'"] textarea');if(area)area.focus();
+  });
+  connectButton.addEventListener("click",()=>{
+    connectMode=!connectMode;firstLinkId=null;board.classList.toggle("notes-connecting",connectMode);connectButton.classList.toggle("notes-connect-active",connectMode);
+    connectButton.textContent=connectMode?"× Отменить соединение":"↗ Соединить нитью";
+    hint.textContent=connectMode?"Нажми на первую заметку, затем на вторую — между ними появится красная нить.":"Режим соединения выключен.";
+    render();
+  });
+  deleteButton.addEventListener("click",()=>{
+    if(!selectedId)return;
+    notes=notes.filter(n=>n.id!==selectedId);links=links.filter(l=>l.a!==selectedId&&l.b!==selectedId);selectedId=null;save();render();
+    hint.textContent="Заметка удалена вместе со связанными нитями.";
+  });
+  board.addEventListener("click",event=>{
+    if(event.target===board||event.target.classList.contains("notes-board-grid")){selectedId=null;render();}
+  });
+  window.addEventListener("resize",drawThreads);
+  render();
+})();
