@@ -1134,15 +1134,18 @@ loadCatalog();
     const card=cards.querySelector('[data-note-id="'+note.id+'"]');
     if(!card)return null;
     const br=board.getBoundingClientRect(),r=card.getBoundingClientRect();
-    return {width:r.width,height:r.height,cx:r.left-br.left+r.width/2,cy:r.top-br.top+r.height/2};
+    return {width:card.offsetWidth,height:card.offsetHeight,angle:(Number(note.angle)||0)*Math.PI/180,cx:r.left-br.left+r.width/2,cy:r.top-br.top+r.height/2};
   }
   function edgePoint(bounds,toward){
     const dx=toward.x-bounds.cx,dy=toward.y-bounds.cy;
     if(!dx&&!dy)return {x:bounds.cx,y:bounds.cy};
-    const sx=dx===0?Infinity:(bounds.width/2)/Math.abs(dx);
-    const sy=dy===0?Infinity:(bounds.height/2)/Math.abs(dy);
+    const cos=Math.cos(bounds.angle),sin=Math.sin(bounds.angle);
+    const localX=dx*cos+dy*sin,localY=-dx*sin+dy*cos;
+    const sx=localX===0?Infinity:(bounds.width/2)/Math.abs(localX);
+    const sy=localY===0?Infinity:(bounds.height/2)/Math.abs(localY);
     const scale=Math.min(sx,sy);
-    return {x:bounds.cx+dx*scale,y:bounds.cy+dy*scale};
+    const x=localX*scale,y=localY*scale;
+    return {x:bounds.cx+x*cos-y*sin,y:bounds.cy+x*sin+y*cos};
   }
   function drawThreads(){
     const w=board.clientWidth,h=board.clientHeight;
