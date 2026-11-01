@@ -622,3 +622,23 @@ body.profile-open{overflow:hidden}
 .note-status-check{background:rgba(52,128,82,.18);border-color:rgba(44,112,67,.35);color:#245d38}
 .note-status-idea{background:rgba(194,133,39,.2);border-color:rgba(161,101,25,.35);color:#795016}
 .note-card textarea{height:68px}
+
+
+/* PHENIKS ambient radio */
+.pheniks-audio{position:fixed;left:22px;bottom:22px;z-index:80;display:flex;align-items:center;gap:14px;padding:10px 13px;background:rgba(8,15,27,.88);border:1px solid rgba(81,166,255,.28);border-radius:12px;box-shadow:0 10px 35px rgba(0,0,0,.32),inset 0 0 22px rgba(37,115,190,.08);backdrop-filter:blur(14px);color:#e8f4ff}
+.audio-toggle{display:flex;align-items:center;gap:10px;padding:0;border:0;background:transparent;color:inherit;text-align:left;cursor:pointer}
+.audio-toggle-icon{display:grid;place-items:center;width:34px;height:34px;border-radius:9px;background:linear-gradient(145deg,#153f68,#102338);border:1px solid rgba(89,179,255,.4);font-size:20px;color:#78c8ff}
+.pheniks-audio.audio-playing .audio-toggle-icon{animation:audioPulse 2.8s ease-in-out infinite}
+.audio-toggle-copy{display:grid;gap:3px}
+.audio-toggle-copy b{font-size:10px;letter-spacing:1.8px}
+.audio-toggle-copy small{font-size:8px;letter-spacing:1px;color:#82a9c8}
+.audio-volume{display:flex;align-items:center;gap:7px;padding-left:12px;border-left:1px solid rgba(132,180,218,.2);font-size:8px;letter-spacing:1px;color:#8fb3d1}
+.audio-volume input{width:68px;accent-color:#55baff;cursor:pointer}
+.track-toast{position:fixed;right:24px;bottom:24px;z-index:90;display:grid;gap:5px;min-width:220px;max-width:min(330px,calc(100vw - 32px));padding:13px 17px 14px 16px;border:1px solid rgba(83,174,255,.36);border-left:3px solid #58bdff;border-radius:10px;background:linear-gradient(135deg,rgba(10,23,40,.96),rgba(11,35,58,.94));box-shadow:0 12px 36px rgba(0,0,0,.4),0 0 24px rgba(42,145,226,.12);backdrop-filter:blur(16px);color:#eaf6ff;opacity:0;transform:translate3d(34px,18px,0);pointer-events:none;transition:opacity .55s ease,transform .65s cubic-bezier(.2,.8,.2,1)}
+.track-toast.show{opacity:1;transform:translate3d(0,0,0)}
+.track-toast-kicker,.track-toast-sub{font-size:8px;letter-spacing:1.8px;color:#7eb9e7}
+.track-toast-title{font-size:14px;font-weight:750;letter-spacing:.2px}
+.track-toast-sub{font-size:7px;color:#6387a5}
+@keyframes audioPulse{0%,100%{box-shadow:0 0 0 rgba(67,174,255,0)}50%{box-shadow:0 0 17px rgba(67,174,255,.28)}}
+@media(max-width:600px){.pheniks-audio{left:12px;bottom:12px;padding:8px 10px;gap:9px}.audio-volume{padding-left:8px}.audio-volume input{width:48px}.track-toast{right:12px;bottom:76px;min-width:190px}}
+@media(prefers-reduced-motion:reduce){.track-toast,.pheniks-audio *{transition:none!important;animation:none!important}}
