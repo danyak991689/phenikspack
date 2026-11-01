@@ -642,3 +642,10 @@ body.profile-open{overflow:hidden}
 @keyframes audioPulse{0%,100%{box-shadow:0 0 0 rgba(67,174,255,0)}50%{box-shadow:0 0 17px rgba(67,174,255,.28)}}
 @media(max-width:600px){.pheniks-audio{left:12px;bottom:12px;padding:8px 10px;gap:9px}.audio-volume{padding-left:8px}.audio-volume input{width:48px}.track-toast{right:12px;bottom:76px;min-width:190px}}
 @media(prefers-reduced-motion:reduce){.track-toast,.pheniks-audio *{transition:none!important;animation:none!important}}
+
+/* Guest track: official Apple Music embedded player */
+.lavash-audio{width:285px;display:grid;gap:8px;padding:12px 13px}
+.lavash-player-head{display:flex;align-items:center;gap:10px}
+.lavash-audio iframe{display:block;border:0;border-radius:8px;overflow:hidden}
+.lavash-caption{font-size:8px;letter-spacing:1.4px;color:#82a9c8;text-transform:uppercase}
+@media(max-width:600px){.lavash-audio{width:245px}.lavash-audio iframe{height:90px}}
