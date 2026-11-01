@@ -1130,23 +1130,37 @@ loadCatalog();
   }catch(error){console.warn("Notes storage unavailable",error);}
   const save=()=>{try{localStorage.setItem(STORAGE_KEY,JSON.stringify({notes,links}));}catch(error){hint.textContent="Не удалось сохранить заметки: возможно, хранилище браузера заполнено.";}}
   const id=()=> "note-"+Date.now().toString(36)+"-"+(++serial).toString(36);
-  function center(note){
-    const w=board.clientWidth,h=board.clientHeight;
-    return {x:note.x/100*w,y:note.y/100*h};
+  function cardBounds(note){
+    const card=cards.querySelector('[data-note-id="'+note.id+'"]');
+    if(!card)return null;
+    const br=board.getBoundingClientRect(),r=card.getBoundingClientRect();
+    return {width:r.width,height:r.height,cx:r.left-br.left+r.width/2,cy:r.top-br.top+r.height/2};
+  }
+  function edgePoint(bounds,toward){
+    const dx=toward.x-bounds.cx,dy=toward.y-bounds.cy;
+    if(!dx&&!dy)return {x:bounds.cx,y:bounds.cy};
+    const sx=dx===0?Infinity:(bounds.width/2)/Math.abs(dx);
+    const sy=dy===0?Infinity:(bounds.height/2)/Math.abs(dy);
+    const scale=Math.min(sx,sy);
+    return {x:bounds.cx+dx*scale,y:bounds.cy+dy*scale};
   }
   function drawThreads(){
     const w=board.clientWidth,h=board.clientHeight;
     threads.setAttribute("viewBox","0 0 "+w+" "+h);
     threads.innerHTML="";
     links=links.filter(l=>notes.some(n=>n.id===l.a)&&notes.some(n=>n.id===l.b)&&l.a!==l.b);
-    links.forEach(link=>{
-      const a=center(notes.find(n=>n.id===link.a)),b=center(notes.find(n=>n.id===link.b));
-      const bend=Math.max(12,Math.min(42,Math.abs(b.x-a.x)*.08));
+    links.forEach((link,index)=>{
+      const boxA=cardBounds(notes.find(n=>n.id===link.a)),boxB=cardBounds(notes.find(n=>n.id===link.b));
+      if(!boxA||!boxB)return;
+      const a=edgePoint(boxA,boxB),b=edgePoint(boxB,boxA);
+      const dx=b.x-a.x,dy=b.y-a.y,len=Math.max(1,Math.hypot(dx,dy));
+      const offset=(index%2===0?1:-1)*Math.min(24,len*.075);
+      const mx=(a.x+b.x)/2-(dy/len)*offset,my=(a.y+b.y)/2+(dx/len)*offset;
       const path=document.createElementNS("http://www.w3.org/2000/svg","path");
-      path.setAttribute("d","M "+a.x+" "+a.y+" Q "+((a.x+b.x)/2+bend)+" "+((a.y+b.y)/2-bend)+" "+b.x+" "+b.y);
+      path.setAttribute("d","M "+a.x+" "+a.y+" Q "+mx+" "+my+" "+b.x+" "+b.y);
       path.setAttribute("class","notes-thread");
       threads.appendChild(path);
-      [a,b].forEach(p=>{const knot=document.createElementNS("http://www.w3.org/2000/svg","circle");knot.setAttribute("cx",p.x);knot.setAttribute("cy",p.y);knot.setAttribute("r","3.3");knot.setAttribute("class","notes-thread-knot");threads.appendChild(knot);});
+      [a,b].forEach(p=>{const knot=document.createElementNS("http://www.w3.org/2000/svg","circle");knot.setAttribute("cx",p.x);knot.setAttribute("cy",p.y);knot.setAttribute("r","3.5");knot.setAttribute("class","notes-thread-knot");threads.appendChild(knot);});
     });
   }
   function render(){
@@ -1158,6 +1172,11 @@ loadCatalog();
       card.dataset.noteId=note.id;
       const pin=document.createElement("span");pin.className="note-pin";card.appendChild(pin);
       const bar=document.createElement("div");bar.className="note-dragbar";bar.innerHTML="<span>ЛИСТОК / "+String(index+1).padStart(2,"0")+"</span><span>✣</span>";card.appendChild(bar);
+      const status=document.createElement("select");status.className="note-status note-status-"+(note.status||"normal");status.setAttribute("aria-label","Пометка заметки");
+      [["normal","Обычная"],["important","★ Важно"],["question","? Под вопросом"],["check","✓ Проверить"],["idea","✦ Идея"]].forEach(([value,label])=>{const option=document.createElement("option");option.value=value;option.textContent=label;status.appendChild(option);});
+      status.value=["normal","important","question","check","idea"].includes(note.status)?note.status:"normal";
+      status.addEventListener("change",()=>{note.status=status.value;status.className="note-status note-status-"+note.status;save();});
+      card.appendChild(status);
       const area=document.createElement("textarea");area.maxLength=500;area.placeholder="Напиши свою мысль...";area.value=note.text;area.setAttribute("aria-label","Текст заметки");area.addEventListener("input",()=>{note.text=area.value;save();});card.appendChild(area);
       const footer=document.createElement("div");footer.className="note-card-footer";
       const label=document.createElement("span");label.textContent="НАКЛОН";
@@ -1205,7 +1224,7 @@ loadCatalog();
     selectedId=noteId;save();render();
   }
   addButton.addEventListener("click",()=>{
-    const note={id:id(),text:"",x:10+(notes.length%4)*17,y:12+(notes.length%3)*23,angle:[-4,3,-2,5][notes.length%4],color:colors[notes.length%colors.length]};
+    const note={id:id(),text:"",status:"normal",x:10+(notes.length%4)*17,y:12+(notes.length%3)*23,angle:[-4,3,-2,5][notes.length%4],color:colors[notes.length%colors.length]};
     notes.push(note);selectedId=note.id;connectMode=false;firstLinkId=null;connectButton.classList.remove("notes-connect-active");connectButton.textContent="↗ Соединить нитью";save();render();
     const area=cards.querySelector('[data-note-id="'+note.id+'"] textarea');if(area)area.focus();
   });
