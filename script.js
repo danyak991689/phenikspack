@@ -1166,7 +1166,10 @@ loadCatalog();
       footer.append(label,rotate);card.appendChild(footer);
       card.addEventListener("click",event=>{
         if(connectMode){event.stopPropagation();handleConnect(note.id);return;}
-        selectedId=note.id;render();
+        if(event.target.closest("textarea,input,.note-dragbar"))return;
+        selectedId=note.id;
+        cards.querySelectorAll(".note-card").forEach(el=>el.classList.toggle("note-selected",el.dataset.noteId===note.id));
+        deleteButton.disabled=false;
       });
       bar.addEventListener("pointerdown",event=>{
         if(connectMode)return;
