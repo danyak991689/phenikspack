@@ -1,28 +1,56 @@
+const PHENIKSPACK_SITE_URL = "https://ember-forest-5962.hosted.pageshare.ai/";
 const copySiteLinkButton = document.querySelector("#copySiteLink");
+const shareSiteLinkButton = document.querySelector("#shareSiteLink");
+
+async function copyPheniksSiteLink() {
+  if (navigator.clipboard && window.isSecureContext) {
+    await navigator.clipboard.writeText(PHENIKSPACK_SITE_URL);
+    return;
+  }
+  const field = document.createElement("textarea");
+  field.value = PHENIKSPACK_SITE_URL;
+  field.setAttribute("readonly", "");
+  field.style.position = "fixed";
+  field.style.opacity = "0";
+  document.body.appendChild(field);
+  field.select();
+  const copied = document.execCommand("copy");
+  field.remove();
+  if (!copied) throw new Error("Clipboard copy failed");
+}
+
 if (copySiteLinkButton) {
   copySiteLinkButton.addEventListener("click", async () => {
-    const siteLink = window.location.href.split("#")[0];
     const originalText = copySiteLinkButton.innerHTML;
     try {
-      if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(siteLink);
-      } else {
-        const field = document.createElement("textarea");
-        field.value = siteLink;
-        field.setAttribute("readonly", "");
-        field.style.position = "fixed";
-        field.style.opacity = "0";
-        document.body.appendChild(field);
-        field.select();
-        const copied = document.execCommand("copy");
-        field.remove();
-        if (!copied) throw new Error("Clipboard copy failed");
-      }
+      await copyPheniksSiteLink();
       copySiteLinkButton.innerHTML = "Ссылка скопирована <span>✓</span>";
-      setTimeout(() => { copySiteLinkButton.innerHTML = originalText; }, 2200);
     } catch (error) {
       copySiteLinkButton.innerHTML = "Не удалось скопировать";
-      setTimeout(() => { copySiteLinkButton.innerHTML = originalText; }, 2200);
+    }
+    setTimeout(() => { copySiteLinkButton.innerHTML = originalText; }, 2200);
+  });
+}
+
+if (shareSiteLinkButton) {
+  shareSiteLinkButton.addEventListener("click", async () => {
+    const originalText = shareSiteLinkButton.innerHTML;
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: "PHENIKSPACK",
+          text: "Заходи на PHENIKSPACK — каталог модов и ресурспаков для Minecraft!",
+          url: PHENIKSPACK_SITE_URL
+        });
+      } else {
+        await copyPheniksSiteLink();
+        shareSiteLinkButton.innerHTML = "Ссылка скопирована <span>✓</span>";
+        setTimeout(() => { shareSiteLinkButton.innerHTML = originalText; }, 2200);
+      }
+    } catch (error) {
+      if (error && error.name === "AbortError") return;
+      shareSiteLinkButton.innerHTML = "Не удалось поделиться";
+      setTimeout(() => { shareSiteLinkButton.innerHTML = originalText; }, 2200);
     }
   });
 }
