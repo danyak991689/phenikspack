@@ -1023,3 +1023,62 @@ if(aiForm)aiForm.addEventListener("submit",function(event){event.preventDefault(
   });
 })();
 loadCatalog();
+
+
+/* One-shot pig snort and hide-behind-the-planet easter egg */
+(function initYellavaPigEasterEgg(){
+  const planet=document.getElementById("planetEasterEgg");
+  const scene=document.querySelector(".hero-art");
+  if(!planet||!scene)return;
+  let playing=false;
+  function pigOink(){
+    const AudioContext=window.AudioContext||window.webkitAudioContext;
+    if(!AudioContext)return;
+    try{
+      const ctx=new AudioContext();
+      const now=ctx.currentTime;
+      const osc=ctx.createOscillator();
+      const filter=ctx.createBiquadFilter();
+      const gain=ctx.createGain();
+      const wobble=ctx.createOscillator();
+      const wobbleGain=ctx.createGain();
+      osc.type="sawtooth";
+      osc.frequency.setValueAtTime(185,now);
+      osc.frequency.exponentialRampToValueAtTime(92,now+.19);
+      osc.frequency.exponentialRampToValueAtTime(138,now+.34);
+      filter.type="lowpass";
+      filter.frequency.setValueAtTime(620,now);
+      filter.frequency.exponentialRampToValueAtTime(260,now+.32);
+      wobble.frequency.value=23;
+      wobbleGain.gain.value=17;
+      wobble.connect(wobbleGain);
+      wobbleGain.connect(osc.frequency);
+      gain.gain.setValueAtTime(.0001,now);
+      gain.gain.exponentialRampToValueAtTime(.22,now+.035);
+      gain.gain.setValueAtTime(.18,now+.19);
+      gain.gain.exponentialRampToValueAtTime(.0001,now+.43);
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      wobble.start(now);
+      osc.stop(now+.45);
+      wobble.stop(now+.45);
+      window.setTimeout(()=>ctx.close(),700);
+    }catch(error){console.warn("Pig sound unavailable",error);}
+  }
+  planet.addEventListener("click",function(){
+    if(playing)return;
+    playing=true;
+    scene.classList.remove("pig-party");
+    void scene.offsetWidth;
+    scene.classList.add("pig-party");
+    pigOink();
+    planet.setAttribute("aria-label","Свинья уже спряталась. Нажми ещё раз позже.");
+    window.setTimeout(function(){
+      scene.classList.remove("pig-party");
+      planet.setAttribute("aria-label","Нажми на планету — секретная пасхалка");
+      playing=false;
+    },2700);
+  });
+})();
