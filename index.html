@@ -148,8 +148,12 @@
 
     <section class="catalog-section section-wrap" id="catalog">
       <div class="section-heading">
-        <div><div class="eyebrow">КОЛЛЕКЦИЯ</div><h2>Найди свой <span>стиль.</span></h2></div>
-        <p>Выбирай настроение, изучай подборки и сохраняй то, что понравилось.</p>
+        <div><div class="eyebrow">КОЛЛЕКЦИЯ</div><h2 id="catalogHeading">Найди свой <span>стиль.</span></h2></div>
+        <p id="catalogIntro">Выбирай настроение, изучай подборки и сохраняй то, что понравилось.</p>
+      </div>
+      <div class="catalog-type-switch" id="catalogTypeSwitch" role="tablist" aria-label="Тип контента">
+        <button class="catalog-type-tab active" type="button" role="tab" aria-selected="true" data-catalog-type="resourcepack">Ресурспаки <span>1 000</span></button>
+        <button class="catalog-type-tab" type="button" role="tab" aria-selected="false" data-catalog-type="mod">Моды <span>1 500</span></button>
       </div>
       <div class="catalog-toolbar">
         <label class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="Поиск ресурспаков..." autocomplete="off"><button class="search-clear" id="searchClear" type="button" aria-label="Очистить поиск" title="Очистить поиск" hidden>×</button><kbd>/</kbd></label>
@@ -170,7 +174,7 @@
         </form>
         <p class="ai-result-note" id="aiResultNote">Опиши желаемый результат как другу: стиль, цвет, детали, FPS, версия — можно всё сразу.</p>
       </div>
-      <div class="catalog-note"><span class="note-icon">i</span> Загружаем до 1000 настоящих ресурс-паков. Подробности и скачивание — прямо на сайте.</div>
+      <div class="catalog-note"><span class="note-icon">i</span> Загружаем настоящие проекты с Modrinth. Подробности и скачивание — прямо на сайте.</div>
       <div class="pack-grid" id="packGrid" aria-live="polite"></div>
       <div class="catalog-more-wrap"><button class="button button-ghost catalog-more-button" id="loadMorePacks" type="button" hidden>Показать ещё паки <span>↓</span></button><span class="catalog-more-count" id="catalogMoreCount"></span></div>
       <div class="empty-state" id="emptyState" hidden><div class="empty-symbol">⌕</div><h3>Ничего не найдено</h3><p>Попробуй изменить запрос или выбрать другую категорию.</p><button class="text-button" id="resetFilters">Сбросить фильтры ↗</button></div>
