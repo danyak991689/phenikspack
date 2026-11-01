@@ -1250,58 +1250,16 @@ loadCatalog();
 })();
 
 
-/* PHENIKS original ambient radio — generated in-browser, no copyrighted recordings */
+
+/* PHENIKS guest track notice */
 (()=>{
- const toggle=document.getElementById("audioToggle"),volume=document.getElementById("audioVolume"),state=document.getElementById("audioState"),wrap=document.getElementById("pheniksAudio"),toast=document.getElementById("trackToast"),toastTitle=document.getElementById("trackToastTitle");
- if(!toggle||!volume||!state||!wrap||!toast||!toastTitle)return;
- const tracks=[
-  {name:"Quiet Overworld",key:[196,246.94,293.66,246.94],melody:[392,440,493.88,440,392,349.23,392,440,523.25,493.88,440,392],tone:.075,tempo:1120},
-  {name:"Blue Hour",key:[174.61,220,261.63,220],melody:[349.23,392,440,523.25,440,392,349.23,329.63,392,440,392,349.23],tone:.07,tempo:1260},
-  {name:"Floating Islands",key:[164.81,207.65,246.94,207.65],melody:[329.63,392,493.88,587.33,493.88,440,392,369.99,392,493.88,440,392],tone:.065,tempo:1050},
-  {name:"Last Light",key:[146.83,196,220,196],melody:[293.66,349.23,392,440,392,349.23,329.63,293.66,349.23,392,349.23,329.63],tone:.07,tempo:1320},
-  {name:"Sunlit Trails",key:[220,261.63,329.63,261.63],melody:[440,523.25,587.33,659.25,587.33,523.25,493.88,523.25,659.25,587.33,523.25,440],tone:.075,tempo:930},
-  {name:"Emerald Motion",key:[196,246.94,293.66,246.94],melody:[392,493.88,587.33,493.88,440,493.88,587.33,659.25,587.33,493.88,440,392],tone:.07,tempo:990}
- ];
- let ctx=null,master=null,current=null,trackIndex=-1,step=0,stepTimer=null,rotationTimer=null,toastTimer=null,playing=false;
- const note=(freq,duration,level,dest,type="sine")=>{
-  const osc=ctx.createOscillator(),gain=ctx.createGain(),filter=ctx.createBiquadFilter();
-  osc.type=type;osc.frequency.value=freq;filter.type="lowpass";filter.frequency.value=1900;
-  gain.gain.setValueAtTime(.0001,ctx.currentTime);gain.gain.exponentialRampToValueAtTime(Math.max(.0002,level),ctx.currentTime+.045);gain.gain.setTargetAtTime(.0001,ctx.currentTime+Math.max(.08,duration*.58),Math.max(.08,duration*.16));
-  osc.connect(filter);filter.connect(gain);gain.connect(dest);osc.start();osc.stop(ctx.currentTime+duration+.1);
- };
- const showTrack=name=>{
-  toastTitle.textContent=name;toast.classList.add("show");clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>toast.classList.remove("show"),5200);
- };
- const playTrack=index=>{
-  trackIndex=index;step=0;const t=tracks[index],now=ctx.currentTime;
-  const bus=ctx.createGain();bus.gain.setValueAtTime(.0001,now);bus.gain.linearRampToValueAtTime(1,now+4);bus.connect(master);
-  t.key.forEach((f)=>note(f/2,8,.009,bus,"sine"));
-  if(current){current.gain.gain.cancelScheduledValues(now);current.gain.gain.setTargetAtTime(.0001,now,.9);const old=current;setTimeout(()=>{try{old.disconnect()}catch(e){}},5000);}
-  current={gain:bus};showTrack(t.name);
-  clearInterval(stepTimer);
-  stepTimer=setInterval(()=>{
-   if(!playing||!ctx)return;
-   const f=t.melody[step%t.melody.length];
-   note(f,1.35,t.tone,bus,"triangle");
-   if(step%2===0)note(t.key[(step/2)%t.key.length]/2,1.9,.022,bus,"sine");
-   if(step%4===0)note(t.key[(step/4)%t.key.length]/4,2.5,.028,bus,"sine");
-   if(step%4===2)note(f*2,.48,.012,bus,"sine");
-   step++;
-  },t.tempo);
- };
- const start=async()=>{
-  const AudioContext=window.AudioContext||window.webkitAudioContext;if(!AudioContext){state.textContent="АУДИО НЕ ПОДДЕРЖИВАЕТСЯ";return;}
-  if(!ctx){ctx=new AudioContext();master=ctx.createGain();master.gain.value=Number(volume.value)/100*.45;master.connect(ctx.destination);}
-  await ctx.resume();playing=true;wrap.classList.add("audio-playing");toggle.setAttribute("aria-label","Выключить фоновую музыку");state.textContent="AMBIENT • SOFT BEAT";
-  playTrack((trackIndex+1)%tracks.length);
-  clearInterval(rotationTimer);rotationTimer=setInterval(()=>{if(playing)playTrack((trackIndex+1)%tracks.length)},95000);
- };
- const stop=()=>{
-  playing=false;clearInterval(stepTimer);clearInterval(rotationTimer);wrap.classList.remove("audio-playing");toggle.setAttribute("aria-label","Включить фоновую музыку");state.textContent="МУЗЫКА ВЫКЛЮЧЕНА";toast.classList.remove("show");
-  if(current&&ctx){const old=current;old.gain.gain.cancelScheduledValues(ctx.currentTime);old.gain.gain.setTargetAtTime(.0001,ctx.currentTime,.35);setTimeout(()=>{try{old.gain.disconnect()}catch(e){}},2200);current=null;}
- };
- toggle.addEventListener("click",()=>playing?stop():start().catch(()=>{state.textContent="НЕ УДАЛОСЬ ЗАПУСТИТЬ";}));
- volume.addEventListener("input",()=>{if(master&&ctx)master.gain.setTargetAtTime(Number(volume.value)/100*.45,ctx.currentTime,.08);});
- document.addEventListener("visibilitychange",()=>{if(ctx&&playing&&document.hidden)ctx.suspend();else if(ctx&&playing&&!document.hidden)ctx.resume();});
+ const toast=document.getElementById("trackToast"),title=document.getElementById("trackToastTitle"),player=document.querySelector(".lavash-audio");
+ if(!toast||!title||!player)return;
+ title.textContent="ЛАВАШ-ГОВЯДИНА";
+ let hideTimer;
+ player.addEventListener("click",()=>{
+  toast.classList.add("show");
+  clearTimeout(hideTimer);
+  hideTimer=setTimeout(()=>toast.classList.remove("show"),5200);
+ });
 })();
