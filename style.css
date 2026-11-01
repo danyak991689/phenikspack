@@ -497,3 +497,45 @@ body.profile-open{overflow:hidden}
 @media(prefers-reduced-motion:reduce){
   .hero-art.pig-party .easter-pig,.hero-art.pig-party .pig-easter-text,.hero-art.pig-party .art-core{animation-duration:.01ms}
 }
+
+
+/* AXOLOTL MOON EASTER EGG */
+.spooky-moon{
+  z-index:5;pointer-events:auto;cursor:pointer;border:0;padding:0;appearance:none;
+  display:block;transition:filter .2s,transform .2s;
+}
+.spooky-moon:hover{filter:brightness(1.22);transform:scale(1.07)}
+.spooky-moon:focus-visible{outline:2px solid #ffb5c6;outline-offset:5px}
+.axolotl-easter{
+  position:absolute;z-index:4;right:calc(14% - 42px);top:calc(10% + 27px);
+  width:170px;opacity:0;pointer-events:none;transform:translateY(-16px) scale(.15);
+  transform-origin:top center;
+}
+.axolotl-pixel-art{display:block;width:100%;height:auto;image-rendering:pixelated;shape-rendering:crispEdges;filter:drop-shadow(0 9px 9px rgba(0,0,0,.35))}
+.axolotl-easter-text{
+  position:absolute;left:50%;top:calc(100% + 5px);transform:translate(-50%,-7px);
+  white-space:nowrap;padding:10px 14px;border:2px solid #f28eaa;border-radius:3px;
+  background:rgba(28,15,27,.97);color:#ffdce6;font:900 clamp(14px,1.4vw,18px) var(--font);
+  box-shadow:0 7px 22px rgba(0,0,0,.4);text-shadow:1px 1px #7c3451;opacity:0;
+}
+.spooky-scenery.axolotl-party .axolotl-easter{animation:axolotlReveal 2.8s cubic-bezier(.2,.8,.2,1) both}
+.spooky-scenery.axolotl-party .axolotl-easter-text{animation:axolotlCaption 2.8s ease both}
+.spooky-scenery.axolotl-party .spooky-moon{animation:moonBlink .45s ease-in-out 2}
+@keyframes axolotlReveal{
+  0%,9%{opacity:0;transform:translateY(-16px) scale(.15)}
+  24%{opacity:1;transform:translateY(5px) scale(.82)}
+  42%,72%{opacity:1;transform:translateY(20px) scale(1)}
+  92%,100%{opacity:0;transform:translateY(-16px) scale(.15)}
+}
+@keyframes axolotlCaption{
+  0%,35%,88%,100%{opacity:0;transform:translate(-50%,-7px)}
+  44%,76%{opacity:1;transform:translate(-50%,0)}
+}
+@keyframes moonBlink{50%{filter:brightness(1.5)}}
+@media(max-width:700px){
+  .axolotl-easter{width:130px;right:calc(9% - 34px);top:calc(9% + 23px)}
+  .axolotl-easter-text{font-size:13px;padding:8px 10px}
+}
+@media(prefers-reduced-motion:reduce){
+  .spooky-scenery.axolotl-party .axolotl-easter,.spooky-scenery.axolotl-party .axolotl-easter-text,.spooky-scenery.axolotl-party .spooky-moon{animation-duration:.01ms}
+}
