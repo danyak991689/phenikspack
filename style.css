@@ -608,3 +608,17 @@ body.profile-open{overflow:hidden}
  .notes-local-label{font-size:9px}
 }
 @media(prefers-reduced-motion:reduce){.notes-action{transition:none}}
+
+
+/* Cleaner note connections and clear priority labels */
+.notes-threads{z-index:1;overflow:visible}
+.notes-cards{z-index:2}
+.notes-thread{stroke:#d93645;stroke-width:2.7;stroke-linecap:round;filter:drop-shadow(0 1px 1px rgba(0,0,0,.75))}
+.notes-thread-knot{fill:#f05a65;stroke:#641c27;stroke-width:1.2}
+.note-status{display:block;width:100%;margin:0 0 7px;padding:5px 7px;border:1px solid rgba(48,36,28,.18);border-radius:3px;background:rgba(255,255,255,.28);color:#393026;font:800 10px var(--font);cursor:pointer;outline:none}
+.note-status:focus{border-color:rgba(48,36,28,.55)}
+.note-status-important{background:rgba(210,54,55,.19);border-color:rgba(155,31,38,.38);color:#8e2028}
+.note-status-question{background:rgba(92,104,174,.18);border-color:rgba(75,83,155,.35);color:#343d87}
+.note-status-check{background:rgba(52,128,82,.18);border-color:rgba(44,112,67,.35);color:#245d38}
+.note-status-idea{background:rgba(194,133,39,.2);border-color:rgba(161,101,25,.35);color:#795016}
+.note-card textarea{height:68px}
