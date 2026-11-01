@@ -539,3 +539,15 @@ body.profile-open{overflow:hidden}
 @media(prefers-reduced-motion:reduce){
   .spooky-scenery.axolotl-party .axolotl-easter,.spooky-scenery.axolotl-party .axolotl-easter-text,.spooky-scenery.axolotl-party .spooky-moon{animation-duration:.01ms}
 }
+
+
+/* Sideways :< face on the axolotl easter-egg caption */
+.axolotl-face{
+  display:inline-block;
+  margin-left:5px;
+  transform:rotate(-90deg) translateY(-1px) scale(1.12);
+  transform-origin:center;
+  color:#ffb5c6;
+  font-weight:1000;
+  text-shadow:2px 0 #7c3451;
+}
